@@ -24,6 +24,10 @@ pub enum JpegBackend {
     ImageBaseline,
     Turbo444,
     Turbo420,
+    #[cfg(feature = "mozjpeg")]
+    Mozjpeg,
+    #[cfg(feature = "jpegli")]
+    Jpegli,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -64,6 +68,9 @@ pub struct CompressionOptions {
     pub limits: ProcessingLimits,
     pub jpeg_backend: JpegBackend,
     pub target_search: TargetSearch,
+    /// Optimize MozJPEG quantization tables from the actual DCT coefficients.
+    #[cfg(feature = "mozjpeg")]
+    pub adaptive_dqt: bool,
     #[cfg(feature = "experimental-prefilter")]
     pub prefilter: Option<crate::experimental::PrefilterOptions>,
 }
@@ -81,6 +88,8 @@ impl Default for CompressionOptions {
             limits: ProcessingLimits::default(),
             jpeg_backend: JpegBackend::Turbo444,
             target_search: TargetSearch::Binary,
+            #[cfg(feature = "mozjpeg")]
+            adaptive_dqt: false,
             #[cfg(feature = "experimental-prefilter")]
             prefilter: None,
         }
@@ -89,6 +98,12 @@ impl Default for CompressionOptions {
 
 impl CompressionOptions {
     pub fn validate(&self) -> Result<(), CompressionError> {
+        #[cfg(feature = "mozjpeg")]
+        if self.adaptive_dqt && self.jpeg_backend != JpegBackend::Mozjpeg {
+            return Err(CompressionError::InvalidOptions(
+                "adaptive DQT requires the MozJPEG backend".into(),
+            ));
+        }
         #[cfg(feature = "experimental-prefilter")]
         if let Some(config) = self.prefilter {
             config.validate()?;

@@ -39,6 +39,47 @@ fn log_secant_and_binary_agree_on_real_jpeg_quality_and_enforce_the_cap() {
 }
 
 #[test]
+#[cfg(any(feature = "mozjpeg", feature = "jpegli"))]
+fn native_backends_compose_with_target_search_and_decode_independently() {
+    let input = common::jpeg(98);
+    let backends = [
+        #[cfg(feature = "mozjpeg")]
+        JpegBackend::Mozjpeg,
+        #[cfg(feature = "jpegli")]
+        JpegBackend::Jpegli,
+    ];
+    for backend in backends {
+        let options = CompressionOptions {
+            jpeg_backend: backend,
+            target_search: TargetSearch::LogSecant,
+            target_bytes: Some(20_000),
+            #[cfg(feature = "mozjpeg")]
+            adaptive_dqt: backend == JpegBackend::Mozjpeg,
+            ..Default::default()
+        };
+        let out = run(&input, &options).unwrap();
+        assert!(out.bytes.len() <= 20_000);
+        assert_eq!(out.report.jpeg_backend, Some(backend));
+        assert_eq!(out.report.final_dimensions, (512, 384));
+        assert_eq!(image::load_from_memory(&out.bytes).unwrap().width(), 512);
+        assert!(out.report.encode_attempts <= 32);
+    }
+}
+
+#[test]
+#[cfg(feature = "mozjpeg")]
+fn adaptive_dqt_is_rejected_for_other_backends() {
+    let options = CompressionOptions {
+        adaptive_dqt: true,
+        ..Default::default()
+    };
+    assert!(matches!(
+        options.validate(),
+        Err(CompressionError::InvalidOptions(_))
+    ));
+}
+
+#[test]
 fn unreachable_target_is_an_error_not_an_oversized_success() {
     let options = CompressionOptions {
         target_bytes: Some(10),

@@ -63,6 +63,25 @@ Decode piksel JPEG memakai libjpeg-turbo dan memperlakukan peringatan decode seb
 
 Batas awal: input 32 MiB, 20 juta piksel, estimasi working memory 256 MiB, maksimal 32 encode. Jumlah piksel yang dapat diproses juga bergantung pada bit depth dan buffer. Limit decode serta estimasi buffer bukan hard cap RSS untuk semua alokasi codec. Cancel diperiksa antar-tahap/percobaan; panggilan encoder yang sedang berjalan tidak dipotong paksa.
 
+### Backend native opsional
+
+Feature `mozjpeg` menyediakan MozJPEG melalui `mozjpeg-sys=2.2.3`, progressive 4:4:4 dengan trellis quantization dan optimasi scan. `--adaptive-dqt` mengaktifkan **`JBOOLEAN_TRELLIS_Q_OPT`**, yang mengoptimalkan tabel kuantisasi dari koefisien gambar yang sedang diencode; ini bukan tabel tetap yang diberi nama adaptif. Opsi ini hanya valid bersama `--jpeg-backend mozjpeg`. DQT mengikuti setiap gambar/skala/quality yang diencode.
+
+Feature `jpegli` menyediakan **Google jpegli asli**, melalui `jpegli-rust=0.1.1`, progressive 4:4:4. Adaptive quantization native jpegli aktif secara default; wrapper ini tidak mengekspos toggle AQ atau tabel DQT kustom. AQ jpegli dan optimasi tabel MozJPEG adalah mekanisme berbeda.
+
+Backend tersebut dapat dikombinasikan dengan `--search log-secant`, serta prefilter tetap/rate-coupled bila feature eksperimen aktif. Setiap percobaan memakai satu encoder; MozJPEG dan jpegli menjadi alternatif backend. ICC RGB, hard target, validasi decode, dan budget encode tetap berlaku.
+
+**Batas build:** jpegli memerlukan Rust >=1.90, CMake >=3.16 dan C++17; wrapper hanya mendukung build native Linux/macOS, tanpa Windows/cross-compilation. Integrasi MozJPEG bersama decoder TurboJPEG saat ini dibatasi Linux dan `panic=unwind`. Default tanpa feature ini tetap deklaratif Rust1.88. Android/ARM64 dan distribusi mobile belum divalidasi.
+
+**Link native:** MozJPEG dan TurboJPEG statis mengekspor simbol `jpeg_*` yang sama dan dapat diam-diam memanggil implementasi yang salah. Build guard menolak kombinasi itu. Gunakan bundled **shared** TurboJPEG, yang hanya mengekspor antarmuka `tj*`, bersama static MozJPEG dan prefixed static jpegli:
+
+```sh
+TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli,experimental-prefilter -- photo.jpg -o moz.jpg --target 200KB --jpeg-backend mozjpeg --adaptive-dqt --search log-secant
+TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli,experimental-prefilter -- photo.jpg -o jpegli.jpg --target 200KB --jpeg-backend jpegli --search log-secant --adaptive-prefilter
+```
+
+Cargo menyiapkan path shared library saat `cargo run`/`cargo test`. Untuk menjalankan executable secara langsung atau mendistribusikannya, sertakan **libturbojpeg.so.0 hasil build yang sama**, lalu atur runtime search path (`LD_LIBRARY_PATH` atau rpath paket). Jangan mengandalkan libturbojpeg sistem yang mungkin lebih lama/tidak menyediakan `tj3*`. Guard juga menolak sumber TurboJPEG non-vendor. Default build tidak memerlukan shared library ini. Pemberitahuan lisensi native harus disertakan dalam distribusi.
+
 ## Eksperimen algoritma
 
 Feature `experimental-prefilter` menambahkan prefilter struktur lokal yang **mati secara default**. Filter memakai tile 256×256 dengan halo 2 piksel dan mengikuti batas input/budget core: default 20 megapiksel, batas atas filter 50 megapiksel bila caller menaikkan budget secara eksplisit. API diagnostik `experimental::analyze` yang mengembalikan seluruh peta tensor tetap dibatasi 1 megapiksel. Implementasinya memakai Scharr, Gaussian window pada ketiga komponen tensor, koherensi, dan convex blend dengan citra blur. Kanal berbobot sRGB dipakai sebagai luma proxy nonlinear; ini bukan OCR, deteksi wajah, atau jaminan bahwa teks tetap terbaca.
@@ -90,8 +109,8 @@ Mode `--samples` menguji JPEG lokal pada 200 KB, 500 KB, dan 1 MB, tanpa/dengan 
 ```sh
 cargo fmt --check
 cargo test --locked
-cargo test --locked --all-features --all-targets
-cargo clippy --locked --all-targets --all-features -- -D warnings
+TURBOJPEG_DYNAMIC=1 cargo test --locked --all-features --all-targets
+TURBOJPEG_DYNAMIC=1 cargo clippy --locked --all-targets --all-features -- -D warnings
 python3 tools/benchmark.py --self-test
 ```
 

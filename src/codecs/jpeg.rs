@@ -25,8 +25,15 @@ pub(crate) fn encode(
     icc: Option<&[u8]>,
     options: &CompressionOptions,
 ) -> Result<Vec<u8>, CompressionError> {
-    if options.jpeg_backend == JpegBackend::ImageBaseline {
-        return encode_baseline(img, quality, icc, options);
+    match options.jpeg_backend {
+        JpegBackend::ImageBaseline => return encode_baseline(img, quality, icc, options),
+        #[cfg(feature = "mozjpeg")]
+        JpegBackend::Mozjpeg => {
+            return super::mozjpeg::encode(img, quality, icc, options, options.adaptive_dqt);
+        }
+        #[cfg(feature = "jpegli")]
+        JpegBackend::Jpegli => return super::jpegli::encode(img, quality, icc, options),
+        _ => (),
     }
     let encode_error = |e: turbojpeg::Error| CompressionError::EncodeFailed(e.to_string());
     let mut compressor = turbojpeg::Compressor::new().map_err(encode_error)?;

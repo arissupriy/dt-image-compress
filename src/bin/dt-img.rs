@@ -46,6 +46,10 @@ struct Args {
     /// Quality search for a byte target
     #[arg(long, value_enum, default_value = "binary")]
     search: Search,
+    /// Input-dependent MozJPEG table optimization (requires --jpeg-backend mozjpeg)
+    #[cfg(feature = "mozjpeg")]
+    #[arg(long)]
+    adaptive_dqt: bool,
     /// Opt-in tiled structure-tensor prefilter; experimental
     #[cfg(feature = "experimental-prefilter")]
     #[arg(long)]
@@ -73,6 +77,10 @@ enum Backend {
     Image,
     Turbo444,
     Turbo420,
+    #[cfg(feature = "mozjpeg")]
+    Mozjpeg,
+    #[cfg(feature = "jpegli")]
+    Jpegli,
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -155,11 +163,17 @@ fn run(args: Args) -> Result<(), Box<dyn Error>> {
             Backend::Image => JpegBackend::ImageBaseline,
             Backend::Turbo444 => JpegBackend::Turbo444,
             Backend::Turbo420 => JpegBackend::Turbo420,
+            #[cfg(feature = "mozjpeg")]
+            Backend::Mozjpeg => JpegBackend::Mozjpeg,
+            #[cfg(feature = "jpegli")]
+            Backend::Jpegli => JpegBackend::Jpegli,
         },
         target_search: match args.search {
             Search::Binary => TargetSearch::Binary,
             Search::LogSecant => TargetSearch::LogSecant,
         },
+        #[cfg(feature = "mozjpeg")]
+        adaptive_dqt: args.adaptive_dqt,
         target_bytes: args.target,
         format: match args.format {
             Format::Keep => OutputFormat::KeepOriginal,
@@ -260,7 +274,7 @@ fn run(args: Args) -> Result<(), Box<dyn Error>> {
         temp.persist_noclobber(&args.output)?;
     }
     eprintln!(
-        "format={:?} input_bytes={} output_bytes={} dimensions={}x{} quality={:?} encode_attempts={} resized={}",
+        "format={:?} input_bytes={} output_bytes={} dimensions={}x{} quality={:?} encode_attempts={} resized={} backend={:?} search={:?} adaptive_dqt={}",
         out.report.output_format,
         out.report.original_bytes,
         out.report.output_bytes,
@@ -268,7 +282,10 @@ fn run(args: Args) -> Result<(), Box<dyn Error>> {
         out.report.final_dimensions.1,
         out.report.quality,
         out.report.encode_attempts,
-        out.report.resized
+        out.report.resized,
+        out.report.jpeg_backend,
+        out.report.target_search,
+        out.report.adaptive_dqt
     );
     for warning in out.report.warnings {
         eprintln!("warning: {warning}");

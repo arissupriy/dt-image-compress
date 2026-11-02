@@ -46,6 +46,7 @@ pub struct CompressionReport {
     pub warnings: Vec<String>,
     pub jpeg_backend: Option<JpegBackend>,
     pub target_search: Option<TargetSearch>,
+    pub adaptive_dqt: bool,
     pub prefilter_threshold: Option<f32>,
 }
 
@@ -323,6 +324,16 @@ where
         jpeg_backend: (format == OutputFormat::Jpeg).then_some(options.jpeg_backend),
         target_search: (format == OutputFormat::Jpeg && options.target_bytes.is_some())
             .then_some(options.target_search),
+        adaptive_dqt: {
+            #[cfg(feature = "mozjpeg")]
+            {
+                format == OutputFormat::Jpeg && options.adaptive_dqt
+            }
+            #[cfg(not(feature = "mozjpeg"))]
+            {
+                false
+            }
+        },
         prefilter_threshold,
     };
     Ok(CompressionOutput { bytes, report })

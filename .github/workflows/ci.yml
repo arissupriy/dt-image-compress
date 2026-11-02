@@ -13,6 +13,18 @@ jobs:
       - run: rustup toolchain install ${{ matrix.toolchain }} --profile minimal --component clippy,rustfmt
       - run: cargo +${{ matrix.toolchain }} fmt --check
       - run: cargo +${{ matrix.toolchain }} test --locked
-      - run: cargo +${{ matrix.toolchain }} test --locked --all-features --all-targets
-      - run: cargo +${{ matrix.toolchain }} clippy --locked --all-targets --all-features -- -D warnings
+      - run: cargo +${{ matrix.toolchain }} test --locked --features cli,experimental-prefilter --all-targets
+      - run: cargo +${{ matrix.toolchain }} clippy --locked --all-targets --features cli,experimental-prefilter -- -D warnings
       - run: python3 tools/benchmark.py --self-test
+  native-jpeg:
+    runs-on: ubuntu-latest
+    env:
+      TURBOJPEG_DYNAMIC: "1"
+      TURBOJPEG_STATIC: "0"
+      TURBOJPEG_SOURCE: vendor
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install stable --profile minimal --component clippy
+      - run: cargo +stable test --locked --all-features --all-targets
+      - run: cargo +stable test --locked --all-features --doc
+      - run: cargo +stable clippy --locked --all-features --all-targets -- -D warnings
