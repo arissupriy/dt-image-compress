@@ -49,6 +49,8 @@ fn native_backends_compose_with_target_search_and_decode_independently() {
         JpegBackend::Mozjpeg,
         #[cfg(feature = "jpegli")]
         JpegBackend::Jpegli,
+        #[cfg(feature = "jpegli")]
+        JpegBackend::Jpegli420,
     ];
     for backend in backends {
         let options = CompressionOptions {

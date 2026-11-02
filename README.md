@@ -67,7 +67,7 @@ Batas awal: input 32 MiB, 20 juta piksel, estimasi working memory 256 MiB, maksi
 
 Feature `mozjpeg` menyediakan MozJPEG melalui `mozjpeg-sys=2.2.3`, progressive 4:4:4 dengan trellis quantization dan optimasi scan. `--adaptive-dqt` mengaktifkan **`JBOOLEAN_TRELLIS_Q_OPT`**, yang mengoptimalkan tabel kuantisasi dari koefisien gambar yang sedang diencode; ini bukan tabel tetap yang diberi nama adaptif. Opsi ini hanya valid bersama `--jpeg-backend mozjpeg`. DQT mengikuti setiap gambar/skala/quality yang diencode.
 
-Feature `jpegli` menyediakan **Google jpegli asli**, melalui `jpegli-rust=0.1.1`, progressive 4:4:4. Adaptive quantization native jpegli aktif secara default; wrapper ini tidak mengekspos toggle AQ atau tabel DQT kustom. AQ jpegli dan optimasi tabel MozJPEG adalah mekanisme berbeda.
+Feature `jpegli` menyediakan **Google jpegli asli**, melalui `jpegli-rust=0.1.1`: `--jpeg-backend jpegli` memakai progressive4:4:4, sedangkan `--jpeg-backend jpegli420` memakai progressive4:2:0. Library memilihnya melalui `JpegBackend::Jpegli`/`Jpegli420`. Adaptive quantization native jpegli aktif secara default; wrapper ini tidak mengekspos toggle AQ atau tabel DQT kustom. AQ jpegli dan optimasi tabel MozJPEG adalah mekanisme berbeda.4:2:0 mengurangi resolusi warna dan tetap pilihan eksplisit, termasuk untuk gambar dengan teks/garis berwarna; default core tetap Turbo444.
 
 Backend tersebut dapat dikombinasikan dengan `--search log-secant`, serta prefilter tetap/rate-coupled bila feature eksperimen aktif. Setiap percobaan memakai satu encoder; MozJPEG dan jpegli menjadi alternatif backend. ICC RGB, hard target, validasi decode, dan budget encode tetap berlaku.
 
@@ -78,6 +78,7 @@ Backend tersebut dapat dikombinasikan dengan `--search log-secant`, serta prefil
 ```sh
 TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli,experimental-prefilter -- photo.jpg -o moz.jpg --target 200KB --jpeg-backend mozjpeg --adaptive-dqt --search log-secant
 TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli,experimental-prefilter -- photo.jpg -o jpegli.jpg --target 200KB --jpeg-backend jpegli --search log-secant
+TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli -- photo.jpg -o jpegli420.jpg --target 200KB --jpeg-backend jpegli420 --search log-secant
 ```
 
 Cargo menyiapkan path shared library saat `cargo run`/`cargo test`. Untuk menjalankan executable secara langsung atau mendistribusikannya, sertakan **libturbojpeg.so.0 hasil build yang sama**, lalu atur runtime search path (`LD_LIBRARY_PATH` atau rpath paket). Jangan mengandalkan libturbojpeg sistem yang mungkin lebih lama/tidak menyediakan `tj3*`. Guard juga menolak sumber TurboJPEG non-vendor. Default build tidak memerlukan shared library ini. Pemberitahuan lisensi native harus disertakan dalam distribusi.

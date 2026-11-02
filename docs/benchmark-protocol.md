@@ -68,6 +68,16 @@ Delapan metode pada target200.000 bytes dan limit desktop yang sama:
 
 Bandingkan T1/T0 dan M1/M0 untuk pengaruh pencarian (kualitas, ukuran, dimensi, probe); M2/M1 untuk DQT; M3/M2 dan J1/J0 untuk prefilter; serta encoder pada budget identik. Encoder memiliki skala quality berbeda. Semua metode memakai satu encoder per percobaan, resize hanya dengan izin suite, dan batas32 encode termasuk probe filter. Pemilihan dimensi dapat berbeda, sehingga perbandingan memasukkan dampak resize. Satu run tanpa warmup menilai keluaran deterministik dan jumlah probe, bukan keunggulan waktu atau memori mobile.
 
+## Pembandingan chroma Linux
+
+```sh
+python3 tools/benchmark.py --samples samples --jpeg-chroma-suite --iterations 1 --output samples/results/jpeg-chroma-repeat
+```
+
+Empat metode tanpa filter, semuanya log-secant: T1 Turbo444, T2 Turbo420, J0 jpegli444/nativeAQ dan J2 jpegli420/nativeAQ. Profil50MP/1GiB, target200.000 bytes, min long edge1024, quality40–95 dan budget32 encode identik. Perbedaan output memasukkan resize/quality yang dipilih independen. Suite memakai build Linux native gabungan dengan shared vendor TurboJPEG; daftar metode suite lama tidak berubah. Waktu satu run bukan klaim performa.
+
+`python3 tools/jpeg_validation.py chroma-fixtures --library-dir "$VALIDATION_LIB_DIR" --output samples/results/jpeg-chroma-fixtures-repeat` menguji empat jalur yang sama pada dokumen/gradien dan target fixture, tanpa filter. `VALIDATION_LIB_DIR` harus menunjuk library hasil build yang cocok. Evaluasi mencatat SSIM luma bersama RGB PSNR/MAE dan ROI teks untuk mengungkap penurunan warna yang dapat tersembunyi dari SSIM luma.
+
 ## SSIM offline pada keluaran yang sudah ada
 
 ```sh

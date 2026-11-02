@@ -81,7 +81,12 @@ fn jpeg_samples(
     samples: &Path,
     jpeg_suite: bool,
     native_suite: bool,
+    chroma_suite: bool,
 ) -> Result<(), Box<dyn Error>> {
+    #[cfg(not(feature = "jpegli"))]
+    if chroma_suite {
+        return Err("chroma suite needs the jpegli feature".into());
+    }
     #[cfg(not(all(
         feature = "mozjpeg",
         feature = "jpegli",
@@ -218,6 +223,12 @@ fn jpeg_samples(
             } else {
                 methods
             };
+            #[cfg(feature = "jpegli")]
+            let methods = if chroma_suite {
+                chroma_methods(&methods[0].1)
+            } else {
+                methods
+            };
             for (method, options) in methods {
                 eprintln!("{name} target={target} method={method}");
                 if !jpeg_suite {
@@ -326,6 +337,24 @@ fn native_methods(base: &CompressionOptions) -> Vec<(&'static str, CompressionOp
     result
 }
 
+#[cfg(feature = "jpegli")]
+fn chroma_methods(base: &CompressionOptions) -> Vec<(&'static str, CompressionOptions)> {
+    [
+        ("T1-turbo-log", JpegBackend::Turbo444),
+        ("T2-turbo420-log", JpegBackend::Turbo420),
+        ("J0-jpegli-log", JpegBackend::Jpegli),
+        ("J2-jpegli420-log", JpegBackend::Jpegli420),
+    ]
+    .into_iter()
+    .map(|(name, backend)| {
+        let mut options = base.clone();
+        options.jpeg_backend = backend;
+        options.target_search = TargetSearch::LogSecant;
+        (name, options)
+    })
+    .collect()
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = std::env::args().skip(1);
     let repetitions: usize = args.next().unwrap_or("5".into()).parse()?;
@@ -337,13 +366,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     if let Some(samples) = args.next() {
         let mode = args.next();
         let native_suite = mode.as_deref() == Some("jpeg-native-suite");
-        let jpeg_suite = mode.as_deref() == Some("jpeg-suite") || native_suite;
+        let chroma_suite = mode.as_deref() == Some("jpeg-chroma-suite");
+        let jpeg_suite = mode.as_deref() == Some("jpeg-suite") || native_suite || chroma_suite;
         jpeg_samples(
             repetitions,
             &directory,
             Path::new(&samples),
             jpeg_suite,
             native_suite,
+            chroma_suite,
         )?;
         if let Ok(status) = fs::read_to_string("/proc/self/status")
             && let Some(peak) = linux_peak_rss_kib(&status)

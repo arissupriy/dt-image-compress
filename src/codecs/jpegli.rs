@@ -34,7 +34,11 @@ pub(super) fn encode(
         jpegli_rust::Options {
             quality,
             scan_mode: jpegli_rust::ScanMode::JpegliDefault,
-            subsampling: jpegli_rust::Subsampling::S444,
+            subsampling: if options.jpeg_backend == crate::JpegBackend::Jpegli420 {
+                jpegli_rust::Subsampling::S420
+            } else {
+                jpegli_rust::Subsampling::S444
+            },
             max_pixels,
             max_output_bytes,
         },
@@ -59,6 +63,31 @@ pub(super) fn encode(
 mod tests {
     use super::*;
     use image::ImageDecoder;
+
+    #[test]
+    fn progressive_420_keeps_dimensions_and_rgb_channel_order() {
+        let image = image::RgbImage::from_fn(33, 25, |x, y| {
+            image::Rgb([(x * 6) as u8, (y * 8) as u8, 96])
+        });
+        let options = CompressionOptions {
+            jpeg_backend: crate::JpegBackend::Jpegli420,
+            ..Default::default()
+        };
+        let bytes = encode(&image, 95, None, &options).unwrap();
+        let header = turbojpeg::read_header(&bytes).unwrap();
+        assert!(header.is_progressive);
+        assert_eq!(header.subsamp, turbojpeg::Subsamp::Sub2x2);
+        let decoded = image::load_from_memory(&bytes).unwrap().into_rgb8();
+        assert_eq!(decoded.dimensions(), image.dimensions());
+        let error = image
+            .as_raw()
+            .iter()
+            .zip(decoded.as_raw())
+            .map(|(a, b)| u64::from(a.abs_diff(*b)))
+            .sum::<u64>() as f64
+            / image.as_raw().len() as f64;
+        assert!(error < 6.0, "RGB mean absolute error: {error}");
+    }
 
     #[test]
     fn progressive_444_preserves_rgb_pixels_and_dimensions() {
@@ -88,10 +117,16 @@ mod tests {
         let image = image::RgbImage::from_pixel(17, 13, image::Rgb([20, 100, 200]));
         let mut profile = vec![42_u8; 140_000];
         profile[16..20].copy_from_slice(b"RGB ");
-        let bytes = encode(&image, 85, Some(&profile), &CompressionOptions::default()).unwrap();
-        let mut decoder =
-            image::codecs::jpeg::JpegDecoder::new(std::io::Cursor::new(bytes)).unwrap();
-        assert_eq!(decoder.icc_profile().unwrap().unwrap(), profile);
+        for backend in [crate::JpegBackend::Jpegli, crate::JpegBackend::Jpegli420] {
+            let options = CompressionOptions {
+                jpeg_backend: backend,
+                ..Default::default()
+            };
+            let bytes = encode(&image, 85, Some(&profile), &options).unwrap();
+            let mut decoder =
+                image::codecs::jpeg::JpegDecoder::new(std::io::Cursor::new(bytes)).unwrap();
+            assert_eq!(decoder.icc_profile().unwrap().unwrap(), profile);
+        }
     }
 
     #[test]

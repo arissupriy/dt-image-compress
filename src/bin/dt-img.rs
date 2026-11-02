@@ -81,6 +81,8 @@ enum Backend {
     Mozjpeg,
     #[cfg(feature = "jpegli")]
     Jpegli,
+    #[cfg(feature = "jpegli")]
+    Jpegli420,
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -167,6 +169,8 @@ fn run(args: Args) -> Result<(), Box<dyn Error>> {
             Backend::Mozjpeg => JpegBackend::Mozjpeg,
             #[cfg(feature = "jpegli")]
             Backend::Jpegli => JpegBackend::Jpegli,
+            #[cfg(feature = "jpegli")]
+            Backend::Jpegli420 => JpegBackend::Jpegli420,
         },
         target_search: match args.search {
             Search::Binary => TargetSearch::Binary,

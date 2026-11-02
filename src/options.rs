@@ -28,6 +28,8 @@ pub enum JpegBackend {
     Mozjpeg,
     #[cfg(feature = "jpegli")]
     Jpegli,
+    #[cfg(feature = "jpegli")]
+    Jpegli420,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -120,6 +120,9 @@ def fixture_run(args):
     methods = METHODS + [
         ('moz-dqt-rate', [*METHODS[1][1], '--adaptive-prefilter']),
         ('jpegli-rate', [*METHODS[2][1], '--adaptive-prefilter'])]
+    if args.mode == 'chroma-fixtures':
+        methods = [METHODS[0], ('turbo420', ['--jpeg-backend', 'turbo420']),
+                   METHODS[2], ('jpegli420', ['--jpeg-backend', 'jpegli420'])]
     info['methods'] = methods
     rows, runs = [], []
     for name, fixture in fixtures.items():
@@ -211,7 +214,7 @@ def main():
     if len(sys.argv)>1 and sys.argv[1]=='worker':
         print(json.dumps(worker(json.loads(sys.argv[2])))); return
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('mode', choices=['fixtures', 'performance'])
+    parser.add_argument('mode', choices=['fixtures', 'chroma-fixtures', 'performance'])
     parser.add_argument('--binary', type=Path, default=ROOT/'target/release/dt-img')
     parser.add_argument('--library-dir', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
@@ -220,7 +223,7 @@ def main():
     parser.add_argument('--fixtures', type=Path, default=ROOT/'samples/results/jpeg-fixtures-2026-11-03')
     parser.add_argument('--repetitions', type=int, default=3)
     args = parser.parse_args()
-    if args.mode=='fixtures': fixture_run(args)
+    if args.mode in ('fixtures', 'chroma-fixtures'): fixture_run(args)
     else: performance_run(args)
 
 

@@ -32,7 +32,9 @@ pub(crate) fn encode(
             return super::mozjpeg::encode(img, quality, icc, options, options.adaptive_dqt);
         }
         #[cfg(feature = "jpegli")]
-        JpegBackend::Jpegli => return super::jpegli::encode(img, quality, icc, options),
+        JpegBackend::Jpegli | JpegBackend::Jpegli420 => {
+            return super::jpegli::encode(img, quality, icc, options);
+        }
         _ => (),
     }
     let encode_error = |e: turbojpeg::Error| CompressionError::EncodeFailed(e.to_string());
