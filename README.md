@@ -111,6 +111,8 @@ Suite native menjalankan delapan ablation encoder/DQT/pencarian/filter pada corp
 
 [SSIM104 keluaran](docs/benchmarks/jpeg-ssim-2026-11-03.md) memberi peringkat berbeda dari PSNR: jpegli tanpa filter menang11/13 terhadap Turbo, sedangkan rata-rata SSIM MozJPEG/DQT lebih rendah pada pasangan kontrolnya. Filter rate-coupled menurunkan SSIM pada10/13 MozJPEG dan13/13 jpegli. [Validasi ROI, waktu/RAM dan Android](docs/benchmarks/jpeg-validation-2026-11-03.md) mencakup20 JPEG teks/gradien dan27 pengukuran proses CLI terpisah. Default tetap Turbo444 + log-secant tanpa filter; jpegli tanpa filter menjadi opsi kualitas desktop. Tidak ada satu backend yang dijamin terbaik pada semua gambar.
 
+[Lanjutan engine Linux/chroma](docs/benchmarks/jpeg-chroma-2026-11-03.md):52/52 memenuhi200KB. Opsi baru jpegli420 mengungguli jpegli444 pada13/13 PSNR RGB dan9/13 SSIM; Turbo420 mempunyai SSIM luma tertinggi rata-rata pada suite ini. Fixture berwarna menunjukkan regresi RGB meskipun SSIM meningkat, sehingga420 tetap pilihan eksplisit. `sample-1mb.jpg` kini dapat menjadi186.425 bytes,2560×1440 tanpa resize, lima encode memakai jpegli420. Android/Flutter ditunda; fokus saat ini engine/Linux.
+
 Scorer offline memakai dependency evaluasi terpisah; tidak menambah dependency produksi:
 
 ```sh

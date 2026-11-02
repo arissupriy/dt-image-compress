@@ -1,0 +1,26 @@
+{
+  "code_snapshot": "591184c",
+  "rust_cargo_build_hashes_match_snapshot": true,
+  "rows": 52,
+  "all_success_under_200000_bytes": true,
+  "all_attempts_at_most32": true,
+  "originals_sha256_unchanged": true,
+  "byte_identical_previous_native_controls": 26,
+  "timing_scope": "single whole-pipeline run while other compilation/tests/fixtures ran; not a latency comparison",
+  "peak_rss_scope": "whole benchmark process, excluding compilation; not per image",
+  "cli_example": {
+    "input": "samples/sample-1mb.jpg",
+    "original_bytes": 1022240,
+    "output": "samples/results/sample-1mb-200KB-jpegli420.jpg",
+    "output_bytes": 186425,
+    "dimensions": [
+      2560,
+      1440
+    ],
+    "encode_attempts": 5,
+    "resized": false,
+    "search": "default log-secant",
+    "sha256": "e1e2fa025b28c304866a84a00be88f6341f4efecc0d9e3a27880fea386002e7e",
+    "byte_identical_to_suite": true
+  }
+}

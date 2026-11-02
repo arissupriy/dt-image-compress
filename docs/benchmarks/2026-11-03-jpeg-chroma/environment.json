@@ -1,0 +1,116 @@
+{
+  "platform": "Linux-7.1.5+kali-amd64-x86_64-with-glibc2.43",
+  "python": "3.14.7",
+  "rustc": "rustc 1.93.0 (254b59607 2026-01-19)",
+  "iterations": 1,
+  "warmups_per_jpeg_method": 0,
+  "dataset": "local user JPEG samples; not a representative corpus",
+  "rss_scope": "whole benchmark process, excluding compilation; not per image",
+  "rss_measured": true,
+  "rss_source": "Linux /proc/self/status VmHWM when available",
+  "jpeg_encoder": "Turbo444/420, Google jpegli444/420 (native AQ enabled); no prefilter",
+  "cargo_features": "cli,experimental-prefilter,mozjpeg,jpegli",
+  "native_linkage": "bundled shared TurboJPEG + static MozJPEG + prefixed static jpegli",
+  "target_search": "all four methods log-secant",
+  "limits": {
+    "max_pixels": 50000000,
+    "working_memory_mib": 1024,
+    "max_encode_attempts": 32
+  },
+  "quality_range": [
+    40,
+    95
+  ],
+  "resize": "all suite methods; independently selected dimensions",
+  "psnr_reference": "independent decoded original JPEG, EXIF-normalized; resized outputs restored with Lanczos3",
+  "prefilter": {
+    "threshold": 0.04,
+    "coherence_boost": 4.0
+  },
+  "rate_coupling": false,
+  "cargo_lock_sha256": "ea66d1f80f90951cc2f4fac27e4174c779b82c2bb02c96eec200310b777d0326",
+  "cargo_toml_sha256": "030643f1b17ba44ffe4537b48c9f1760cf0158e45a2d9b6adcbd872d4e151d58",
+  "build_rs_sha256": "61b513e9d3454dc061a2eb6672558fea80959e06a47414f46bd00558c31f11c8",
+  "rust_source_sha256": {
+    "src/bin/dt-img.rs": "6a8f4ee3f1ed88b9c67f73a5cb3d86686871b0ef16a11a6097cdd17f2909e484",
+    "src/codecs/jpeg.rs": "e1f45718af9f9f9cd88820e50a072ac545fd16ff11a2b145746796ce277c6bdc",
+    "src/codecs/jpegli.rs": "420f199cf2669592d78b0a527e9344aaa2928cf453424d24c939f70f52acf184",
+    "src/codecs/mod.rs": "bbc3b813de9f89ae539873c90cc442d748eb80592d963abd7a69c4bd86f02a0d",
+    "src/codecs/mozjpeg.rs": "fb22cb51c98e4eeb0ee3cc56f4924221abd52b7ed562196599b09eeb6a5d39be",
+    "src/codecs/png.rs": "e574e0279e051bda5c971923cb07cec7051da350c0efa0c41841bff032d903b5",
+    "src/error.rs": "28e3bd83a0ee50b4ca6833d7e873879cafb835f24a7fdfeba8bd94930510d1f6",
+    "src/experimental.rs": "a63c88f21146af43328ddc49ebf4916ecb4a07b1bcc8f64870e58ac7400f8013",
+    "src/input.rs": "b708150e8c30ab39f0aa921d7565efd7a3f31f6b92bdee681a513057ba4a24a1",
+    "src/lib.rs": "eaac549eb9891183ca57bb214b324f528bdbcea7bddff272430e3c0933fc669a",
+    "src/options.rs": "1283361afca338fde298ad4bb760170770174e70dab20a3c88582e32723e0396",
+    "src/solver.rs": "cb3c96b5503b388269992be597553d7faad596bf03c265de5b9dade771150667",
+    "examples/benchmark.rs": "290127716bfa6cd8564f99b26bb1ae8e7bfc76675e15a6eb3d35994fe00dd282"
+  },
+  "input_sha256": {
+    "sample-01": {
+      "filename": "pexels-bibekghosh-14553713.jpg",
+      "bytes": 1834818,
+      "sha256": "4abe6808695ba270d642f92e87d4780078c7e357dd4b1e8ea8efc5f6dd54f799"
+    },
+    "sample-02": {
+      "filename": "pexels-izafi-33061425.jpg",
+      "bytes": 2498098,
+      "sha256": "7b0086f8d9c1a3df63005d20e26999cbc45aa0580c10564771fb1c248778189c"
+    },
+    "sample-03": {
+      "filename": "pexels-king-siberia-1123639-2201541.jpg",
+      "bytes": 4013537,
+      "sha256": "9379ce5369691e3c6bf8e517a87baef6d4589e6561141a4f4e6c3a45ff7a1a7a"
+    },
+    "sample-04": {
+      "filename": "pexels-kseniachernaya-5767595.jpg",
+      "bytes": 1029352,
+      "sha256": "1ac1c846cf4ca40637d7cc26a2eb1b1163f953d74186db4a695c04a12113a3f3"
+    },
+    "sample-05": {
+      "filename": "pexels-markusspiske-105003.jpg",
+      "bytes": 881790,
+      "sha256": "75650208eee51d66bcfc4583fcc199b95c1cde22344b7fc0f053fbb05bd9cd5e"
+    },
+    "sample-06": {
+      "filename": "pexels-myatezhny39-3570072.jpg",
+      "bytes": 924639,
+      "sha256": "41f4c05c2c09159f6901b6a70e005b8723437cae40a1f93441ff7792c65df16d"
+    },
+    "sample-07": {
+      "filename": "pexels-pavel-danilyuk-6612793.jpg",
+      "bytes": 2596457,
+      "sha256": "2c357e11e709929eec8c10aa992aedbfaff127255912ef7f7ee937ae8a17d793"
+    },
+    "sample-08": {
+      "filename": "pexels-sound-designer-s-k-pramanik-785950771-35870496.jpg",
+      "bytes": 2077390,
+      "sha256": "6c2509c2893da7fdf5e0385bed02dfdd891fb719876f8fc573ef334edaabe336"
+    },
+    "sample-09": {
+      "filename": "pexels-tizzy-20472033.jpg",
+      "bytes": 3117671,
+      "sha256": "b8cb3fb68384a89781e20e580eb73afbc73d7d2cfb9ba08522685edb53180b76"
+    },
+    "sample-10": {
+      "filename": "pexels-zhanqun-cai-1507025-7640750.jpg",
+      "bytes": 427411,
+      "sha256": "e81d99c05a915d5f1243b0a356d5e9a7adb528ab3520692795bd07e2553a5ca2"
+    },
+    "sample-11": {
+      "filename": "sample-10mb.jpg",
+      "bytes": 9962054,
+      "sha256": "32535fe694ed6d841d315ec992dfac0204a9d349b79093288d53411f98259a6e"
+    },
+    "sample-12": {
+      "filename": "sample-1mb.jpg",
+      "bytes": 1022240,
+      "sha256": "429f85c9592bba3135e555f7ebcdeb4a0d9127cbe065e481b4b903a84851b2f3"
+    },
+    "sample-13": {
+      "filename": "sample-5mb.jpg",
+      "bytes": 5127247,
+      "sha256": "bf171bf6cdfec77b709b9416b3de23b3305dbbbd26ef818be2745447f505eb86"
+    }
+  }
+}

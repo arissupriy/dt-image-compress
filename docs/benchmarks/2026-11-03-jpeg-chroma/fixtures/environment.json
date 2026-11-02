@@ -1,0 +1,120 @@
+{
+  "platform": "Linux-7.1.5+kali-amd64-x86_64-with-glibc2.43",
+  "python": "3.14.7",
+  "binary": "/home/arissupriy/Projects/DailyTools/dt-image-compress/target/release/dt-img",
+  "binary_sha256": "89c14f27ebf02805e123fd92d9f762c9374b45ef88e061391608b2d2ed1f1a03",
+  "native_library": "/home/arissupriy/Projects/DailyTools/dt-image-compress/target/release/build/turbojpeg-sys-e0f736f7debad7b0/out/lib/libturbojpeg.so.0.4.0",
+  "native_library_sha256": "f16570bbf4982cb939691416b80844a4b117a9e4a48523d2a23de38bd7de2604",
+  "script_sha256": "21c6a0dcebdbbe37b30c03dafc8f220f4f2e3ac1e9ab4bd19b1035740a21d413",
+  "methods": [
+    [
+      "turbo",
+      [
+        "--jpeg-backend",
+        "turbo444"
+      ]
+    ],
+    [
+      "turbo420",
+      [
+        "--jpeg-backend",
+        "turbo420"
+      ]
+    ],
+    [
+      "jpegli",
+      [
+        "--jpeg-backend",
+        "jpegli"
+      ]
+    ],
+    [
+      "jpegli420",
+      [
+        "--jpeg-backend",
+        "jpegli420"
+      ]
+    ]
+  ],
+  "resize": "explicit permission; Lanczos3; minimum long edge256",
+  "search": "explicit log-secant",
+  "metric_process_included_in_timing": false,
+  "numpy": "2.4.6",
+  "scipy": "1.17.1",
+  "Pillow": "12.3.0",
+  "scorer_sha256": "0ca162249031f0dc690c9e2ac2f20f061e9af8a606ff185f34aeb0c4be1b7f26",
+  "ssim": {
+    "luma": "0.299R+0.587G+0.114B on nonlinear8bitRGB",
+    "window": 11,
+    "sigma": 1.5,
+    "K1": 0.01,
+    "K2": 0.03,
+    "data_range": 255,
+    "covariance": "population",
+    "border_crop": 5,
+    "scale": "full original resolution; no SSIM pre-downsample"
+  },
+  "decoder": "Pillow RGB + ImageOps.exif_transpose; resized outputs restored with Pillow Lanczos3",
+  "font": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+  "font_sha256": "bb01e8ee9284e494256d4d34e8db8613b3a78148721250bfee91a875bccc3481",
+  "fixtures": {
+    "document": {
+      "file": "document.png",
+      "sha256": "a02bde7501e9a3d5907ee061df70c376c8d6dfb0b6e09a14af4e96cd4fc0ced6",
+      "rois": {
+        "text-small": [
+          20,
+          20,
+          1004,
+          200
+        ],
+        "text-medium": [
+          20,
+          220,
+          1004,
+          440
+        ],
+        "text-large": [
+          20,
+          470,
+          1004,
+          748
+        ]
+      },
+      "targets": [
+        64000,
+        128000
+      ]
+    },
+    "gradient": {
+      "file": "gradient.png",
+      "sha256": "e070d25c504edf3bbdac7610833e7e3fb3b6f14f3aca8e7d17724811257505bc",
+      "rois": {
+        "gray-ramp": [
+          0,
+          0,
+          1024,
+          256
+        ],
+        "dark-ramp": [
+          0,
+          256,
+          1024,
+          512
+        ],
+        "color-ramp": [
+          0,
+          512,
+          1024,
+          768
+        ]
+      },
+      "targets": [
+        8000,
+        16000
+      ]
+    }
+  },
+  "text_metric": "binary foreground precision/recall at Y<128; not OCR or proof of readability",
+  "gradient_metric": "SSIM/PSNR/MAE and saved ramps for inspection; no perceptual banding guarantee"
+}

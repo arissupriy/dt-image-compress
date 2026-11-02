@@ -1,0 +1,99 @@
+{
+  "methods": {
+    "J0-jpegli-log": {
+      "ssim_y": 0.7309250878354895,
+      "psnr_rgb": 30.933367821389755,
+      "mae_rgb": 7.461743943663604
+    },
+    "J2-jpegli420-log": {
+      "ssim_y": 0.7334941957859644,
+      "psnr_rgb": 31.158842312318225,
+      "mae_rgb": 7.35381734815667
+    },
+    "T1-turbo-log": {
+      "ssim_y": 0.7256233430186314,
+      "psnr_rgb": 30.802739378411978,
+      "mae_rgb": 7.516851739179682
+    },
+    "T2-turbo420-log": {
+      "ssim_y": 0.7371099320109329,
+      "psnr_rgb": 30.771796834798515,
+      "mae_rgb": 7.586165120450616
+    }
+  },
+  "pairs": {
+    "J2-jpegli420-log vs J0-jpegli-log": {
+      "ssim_y": {
+        "wins": 9,
+        "ties": 0,
+        "losses": 4,
+        "mean_delta": 0.002569107950474919,
+        "min_delta": -0.0016678856078699011,
+        "max_delta": 0.01472095561687825
+      },
+      "psnr_rgb": {
+        "wins": 13,
+        "ties": 0,
+        "losses": 0,
+        "mean_delta": 0.22547449092846905,
+        "min_delta": 0.006378695616977126,
+        "max_delta": 0.960504831113802
+      }
+    },
+    "J2-jpegli420-log vs T1-turbo-log": {
+      "ssim_y": {
+        "wins": 12,
+        "ties": 0,
+        "losses": 1,
+        "mean_delta": 0.007870852767333018,
+        "min_delta": -0.0017621444223467897,
+        "max_delta": 0.02514326848555415
+      },
+      "psnr_rgb": {
+        "wins": 13,
+        "ties": 0,
+        "losses": 0,
+        "mean_delta": 0.35610293390624415,
+        "min_delta": 0.0510021462830732,
+        "max_delta": 2.13976034298868
+      }
+    },
+    "J2-jpegli420-log vs T2-turbo420-log": {
+      "ssim_y": {
+        "wins": 3,
+        "ties": 0,
+        "losses": 10,
+        "mean_delta": -0.003615736224968455,
+        "min_delta": -0.012081284275558088,
+        "max_delta": 0.006981626708175703
+      },
+      "psnr_rgb": {
+        "wins": 13,
+        "ties": 0,
+        "losses": 0,
+        "mean_delta": 0.38704547751970775,
+        "min_delta": 0.06252506926819734,
+        "max_delta": 1.0936801890857382
+      }
+    },
+    "T2-turbo420-log vs T1-turbo-log": {
+      "ssim_y": {
+        "wins": 13,
+        "ties": 0,
+        "losses": 0,
+        "mean_delta": 0.011486588992301473,
+        "min_delta": 0.0012307877472167439,
+        "max_delta": 0.03722455276111224
+      },
+      "psnr_rgb": {
+        "wins": 7,
+        "ties": 0,
+        "losses": 6,
+        "mean_delta": -0.030942543613463568,
+        "min_delta": -1.0222587886164511,
+        "max_delta": 1.2080132806907642
+      }
+    }
+  },
+  "tie_tolerance": 1e-12
+}
