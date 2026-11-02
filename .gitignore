@@ -2,4 +2,5 @@
 /benchmark-results/
 /samples/
 __pycache__/
+/.venv/
 

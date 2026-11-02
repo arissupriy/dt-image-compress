@@ -3,6 +3,13 @@ on: [push, pull_request]
 permissions:
   contents: read
 jobs:
+  evaluation-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m venv .venv
+      - run: .venv/bin/pip install -r tools/requirements-evaluation.txt
+      - run: .venv/bin/python -m unittest discover -s tools -p 'test_jpeg_*.py'
   test:
     runs-on: ubuntu-latest
     strategy:

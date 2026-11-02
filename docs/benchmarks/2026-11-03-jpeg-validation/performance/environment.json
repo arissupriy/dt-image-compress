@@ -1,0 +1,60 @@
+{
+  "platform": "Linux-7.1.5+kali-amd64-x86_64-with-glibc2.43",
+  "python": "3.14.7",
+  "binary": "/home/arissupriy/Projects/DailyTools/dt-image-compress/target/release/dt-img",
+  "binary_sha256": "8ef026c8f63bf73771dbbc39213a4f23c278e477e174cbf3a3a5918c2814445b",
+  "native_library": "/home/arissupriy/Projects/DailyTools/dt-image-compress/target/release/build/turbojpeg-sys-e0f736f7debad7b0/out/lib/libturbojpeg.so.0.4.0",
+  "native_library_sha256": "f16570bbf4982cb939691416b80844a4b117a9e4a48523d2a23de38bd7de2604",
+  "script_sha256": "e8bc65daae849a1ad6aa82967620d841b62580e038e0d80a888f0bab8a38a7fe",
+  "methods": [
+    [
+      "turbo",
+      [
+        "--jpeg-backend",
+        "turbo444"
+      ]
+    ],
+    [
+      "moz-dqt",
+      [
+        "--jpeg-backend",
+        "mozjpeg",
+        "--adaptive-dqt"
+      ]
+    ],
+    [
+      "jpegli",
+      [
+        "--jpeg-backend",
+        "jpegli"
+      ]
+    ]
+  ],
+  "resize": "explicit permission; Lanczos3; minimum long edge256",
+  "search": "explicit log-secant",
+  "metric_process_included_in_timing": false,
+  "repetitions": 3,
+  "warmups_per_case_method": 1,
+  "cpu_affinity": [
+    0
+  ],
+  "rss_scope": "fresh CLI child only; Linux RUSAGE_CHILDREN.ru_maxrss KiB; one child per helper",
+  "timing_scope": "CLI process launch/load/read/compress/validate/write/fsync; no quality metrics",
+  "inputs": {
+    "photo": {
+      "path": "/home/arissupriy/Projects/DailyTools/dt-image-compress/samples/pexels-markusspiske-105003.jpg",
+      "sha256": "75650208eee51d66bcfc4583fcc199b95c1cde22344b7fc0f053fbb05bd9cd5e",
+      "target_bytes": 200000
+    },
+    "noise": {
+      "path": "/home/arissupriy/Projects/DailyTools/dt-image-compress/samples/sample-1mb.jpg",
+      "sha256": "429f85c9592bba3135e555f7ebcdeb4a0d9127cbe065e481b4b903a84851b2f3",
+      "target_bytes": 200000
+    },
+    "text": {
+      "path": "/home/arissupriy/Projects/DailyTools/dt-image-compress/samples/results/jpeg-fixtures-2026-11-03/document.png",
+      "sha256": "a02bde7501e9a3d5907ee061df70c376c8d6dfb0b6e09a14af4e96cd4fc0ced6",
+      "target_bytes": 64000
+    }
+  }
+}

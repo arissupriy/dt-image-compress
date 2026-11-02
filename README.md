@@ -71,13 +71,13 @@ Feature `jpegli` menyediakan **Google jpegli asli**, melalui `jpegli-rust=0.1.1`
 
 Backend tersebut dapat dikombinasikan dengan `--search log-secant`, serta prefilter tetap/rate-coupled bila feature eksperimen aktif. Setiap percobaan memakai satu encoder; MozJPEG dan jpegli menjadi alternatif backend. ICC RGB, hard target, validasi decode, dan budget encode tetap berlaku.
 
-**Batas build:** jpegli memerlukan Rust >=1.90, CMake >=3.16 dan C++17; wrapper hanya mendukung build native Linux/macOS, tanpa Windows/cross-compilation. Integrasi MozJPEG bersama decoder TurboJPEG saat ini dibatasi Linux dan `panic=unwind`. Default tanpa feature ini tetap deklaratif Rust1.88. Android/ARM64 dan distribusi mobile belum divalidasi.
+**Batas build:** jpegli memerlukan Rust >=1.90, CMake >=3.16 dan C++17; wrapper hanya mendukung build native Linux/macOS, tanpa Windows/cross-compilation. Integrasi MozJPEG bersama decoder TurboJPEG saat ini dibatasi Linux dan `panic=unwind`. Default tanpa feature ini tetap deklaratif Rust1.88. Default backend + CLI berhasil di-cross-build untuk Android ARM64/API24 dengan NDK r27d; runtime perangkat dan distribusi mobile belum divalidasi. Keberhasilan ini tidak mencakup backend opsional.
 
 **Link native:** MozJPEG dan TurboJPEG statis mengekspor simbol `jpeg_*` yang sama dan dapat diam-diam memanggil implementasi yang salah. Build guard menolak kombinasi itu. Gunakan bundled **shared** TurboJPEG, yang hanya mengekspor antarmuka `tj*`, bersama static MozJPEG dan prefixed static jpegli:
 
 ```sh
 TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli,experimental-prefilter -- photo.jpg -o moz.jpg --target 200KB --jpeg-backend mozjpeg --adaptive-dqt --search log-secant
-TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli,experimental-prefilter -- photo.jpg -o jpegli.jpg --target 200KB --jpeg-backend jpegli --search log-secant --adaptive-prefilter
+TURBOJPEG_DYNAMIC=1 cargo run --locked --release --features cli,mozjpeg,jpegli,experimental-prefilter -- photo.jpg -o jpegli.jpg --target 200KB --jpeg-backend jpegli --search log-secant
 ```
 
 Cargo menyiapkan path shared library saat `cargo run`/`cargo test`. Untuk menjalankan executable secara langsung atau mendistribusikannya, sertakan **libturbojpeg.so.0 hasil build yang sama**, lalu atur runtime search path (`LD_LIBRARY_PATH` atau rpath paket). Jangan mengandalkan libturbojpeg sistem yang mungkin lebih lama/tidak menyediakan `tj3*`. Guard juga menolak sumber TurboJPEG non-vendor. Default build tidak memerlukan shared library ini. Pemberitahuan lisensi native harus disertakan dalam distribusi.
@@ -108,6 +108,17 @@ Suite native menjalankan delapan ablation encoder/DQT/pencarian/filter pada corp
 
 [Hasil native 13 JPEG](docs/benchmarks/jpeg-native-2026-11-03.md): 104/104 memenuhi 200KB. Log-secant menghasilkan JPEG identik dengan binary pada Turbo/MozJPEG dengan total encode 38,12%/36,67% lebih sedikit, sehingga menjadi default. MozJPEG dan jpegli memberi keuntungan yang berbeda antarinput; DQT menambah keuntungan kecil, sedangkan filter merugikan PSNR pada 10/13 input untuk kedua backend baru. Pada `sample-1mb.jpg`, jpegli menghasilkan 191.323 bytes pada 2560×1440 tanpa resize. `samples/results/best-psnr-200KB-v2/` menyimpan pilihan setelah pengukuran dari kedua run, bukan auto-selection produksi.
 
+[SSIM104 keluaran](docs/benchmarks/jpeg-ssim-2026-11-03.md) memberi peringkat berbeda dari PSNR: jpegli tanpa filter menang11/13 terhadap Turbo, sedangkan rata-rata SSIM MozJPEG/DQT lebih rendah pada pasangan kontrolnya. Filter rate-coupled menurunkan SSIM pada10/13 MozJPEG dan13/13 jpegli. [Validasi ROI, waktu/RAM dan Android](docs/benchmarks/jpeg-validation-2026-11-03.md) mencakup20 JPEG teks/gradien dan27 pengukuran proses CLI terpisah. Default tetap Turbo444 + log-secant tanpa filter; jpegli tanpa filter menjadi opsi kualitas desktop. Tidak ada satu backend yang dijamin terbaik pada semua gambar.
+
+Scorer offline memakai dependency evaluasi terpisah; tidak menambah dependency produksi:
+
+```sh
+python3 -m pip install -r tools/requirements-evaluation.txt
+python3 tools/jpeg_quality.py --samples samples --run samples/results/jpeg-native-2026-11-02 --output samples/results/jpeg-quality-repeat
+```
+
+Untuk memeriksa build default Android ARM64 dari root crate, sediakan Rust target `aarch64-linux-android` dan jalankan `bash tools/check_android.sh /path/to/android-ndk`. Script ini memeriksa build/ELF pada host Linux; pengujian perangkat tetap diperlukan sebelum integrasi Flutter.
+
 ## Verifikasi
 
 ```sh
@@ -116,6 +127,7 @@ cargo test --locked
 TURBOJPEG_DYNAMIC=1 cargo test --locked --all-features --all-targets
 TURBOJPEG_DYNAMIC=1 cargo clippy --locked --all-targets --all-features -- -D warnings
 python3 tools/benchmark.py --self-test
+python3 -m unittest discover -s tools -p 'test_jpeg_*.py'
 ```
 
 ## Status dan lisensi

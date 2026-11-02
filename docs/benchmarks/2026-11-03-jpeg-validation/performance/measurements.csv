@@ -1,0 +1,55 @@
+case,method,iteration,target_bytes,returncode,wall_seconds,user_seconds,system_seconds,peak_rss_kib,stderr,stdout,output_bytes,output_sha256,encode_attempts,dimensions,resized
+photo,turbo,0,200000,0,2.0138581480132416,1.7681749999999998,0.23202299999999998,100628,"format=Jpeg input_bytes=881790 output_bytes=195607 dimensions=2074x1383 quality=Some(45) encode_attempts=8 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,195607,abb93ea1227c7a4711d5f86cd8e574164463178da15c67245a819a95b1b8600b,8,2074x1383,true
+photo,moz-dqt,0,200000,0,10.61661012697732,10.275486,0.307984,125264,"format=Jpeg input_bytes=881790 output_bytes=192951 dimensions=2651x1767 quality=Some(43) encode_attempts=8 resized=true backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,192951,c53054d1c9380c3c057a61057194079ec465bfc4f07754a65db1bf2bdb330030,8,2651x1767,true
+photo,jpegli,0,200000,0,2.9732187379850075,2.650957,0.307878,111448,"format=Jpeg input_bytes=881790 output_bytes=197984 dimensions=2330x1553 quality=Some(51) encode_attempts=11 resized=true backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,197984,f47fdf70880dccc9aafa22f2300aaf2a9fa4aeb59a905117c56559cc1519e678,11,2330x1553,true
+photo,moz-dqt,1,200000,0,15.494083783007227,15.191121,0.28790699999999997,125004,"format=Jpeg input_bytes=881790 output_bytes=192951 dimensions=2651x1767 quality=Some(43) encode_attempts=8 resized=true backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,192951,c53054d1c9380c3c057a61057194079ec465bfc4f07754a65db1bf2bdb330030,8,2651x1767,true
+photo,jpegli,1,200000,0,5.476917052001227,4.981267,0.471362,111312,"format=Jpeg input_bytes=881790 output_bytes=197984 dimensions=2330x1553 quality=Some(51) encode_attempts=11 resized=true backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,197984,f47fdf70880dccc9aafa22f2300aaf2a9fa4aeb59a905117c56559cc1519e678,11,2330x1553,true
+photo,turbo,1,200000,0,3.420721300004516,2.985094,0.420717,100524,"format=Jpeg input_bytes=881790 output_bytes=195607 dimensions=2074x1383 quality=Some(45) encode_attempts=8 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,195607,abb93ea1227c7a4711d5f86cd8e574164463178da15c67245a819a95b1b8600b,8,2074x1383,true
+photo,jpegli,2,200000,0,4.62293111498002,4.1398,0.45909,111508,"format=Jpeg input_bytes=881790 output_bytes=197984 dimensions=2330x1553 quality=Some(51) encode_attempts=11 resized=true backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,197984,f47fdf70880dccc9aafa22f2300aaf2a9fa4aeb59a905117c56559cc1519e678,11,2330x1553,true
+photo,turbo,2,200000,0,4.0301436389563605,3.5969249999999997,0.416107,100564,"format=Jpeg input_bytes=881790 output_bytes=195607 dimensions=2074x1383 quality=Some(45) encode_attempts=8 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,195607,abb93ea1227c7a4711d5f86cd8e574164463178da15c67245a819a95b1b8600b,8,2074x1383,true
+photo,moz-dqt,2,200000,0,17.62221350899199,17.222264,0.37596199999999996,125160,"format=Jpeg input_bytes=881790 output_bytes=192951 dimensions=2651x1767 quality=Some(43) encode_attempts=8 resized=true backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,192951,c53054d1c9380c3c057a61057194079ec465bfc4f07754a65db1bf2bdb330030,8,2651x1767,true
+noise,turbo,0,200000,0,3.4703317920211703,3.068212,0.387521,86284,"format=Jpeg input_bytes=1022240 output_bytes=196956 dimensions=2304x1296 quality=Some(51) encode_attempts=10 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,196956,6b6da57fd355d388e8ebe32526278266a3daf36eb7a7a5193f8477c0663885c2,10,2304x1296,true
+noise,moz-dqt,0,200000,0,12.307413543981966,12.200694,0.091975,69592,"format=Jpeg input_bytes=1022240 output_bytes=196569 dimensions=2560x1440 quality=Some(59) encode_attempts=8 resized=false backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,196569,ffafffac7b657650c301739bdf594271a79d4e050689de2d0b0315c4b6b389be,8,2560x1440,false
+noise,jpegli,0,200000,0,1.6676679530064575,1.330765,0.211803,51204,"format=Jpeg input_bytes=1022240 output_bytes=191323 dimensions=2560x1440 quality=Some(59) encode_attempts=6 resized=false backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,191323,4e439722fe1c94fc5f1da21ebc4ff739e419e6befb72a8cf45ee65daaffd052a,6,2560x1440,false
+noise,moz-dqt,1,200000,0,10.922457461012527,10.71936,0.107792,69392,"format=Jpeg input_bytes=1022240 output_bytes=196569 dimensions=2560x1440 quality=Some(59) encode_attempts=8 resized=false backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,196569,ffafffac7b657650c301739bdf594271a79d4e050689de2d0b0315c4b6b389be,8,2560x1440,false
+noise,jpegli,1,200000,0,1.6666405849973671,1.440973,0.212143,51156,"format=Jpeg input_bytes=1022240 output_bytes=191323 dimensions=2560x1440 quality=Some(59) encode_attempts=6 resized=false backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,191323,4e439722fe1c94fc5f1da21ebc4ff739e419e6befb72a8cf45ee65daaffd052a,6,2560x1440,false
+noise,turbo,1,200000,0,3.700303856981918,3.167036,0.415873,86312,"format=Jpeg input_bytes=1022240 output_bytes=196956 dimensions=2304x1296 quality=Some(51) encode_attempts=10 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,196956,6b6da57fd355d388e8ebe32526278266a3daf36eb7a7a5193f8477c0663885c2,10,2304x1296,true
+noise,jpegli,2,200000,0,1.5648187449551187,1.3599350000000001,0.19199,51008,"format=Jpeg input_bytes=1022240 output_bytes=191323 dimensions=2560x1440 quality=Some(59) encode_attempts=6 resized=false backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,191323,4e439722fe1c94fc5f1da21ebc4ff739e419e6befb72a8cf45ee65daaffd052a,6,2560x1440,false
+noise,turbo,2,200000,0,3.546729187015444,3.071244,0.46328199999999997,86300,"format=Jpeg input_bytes=1022240 output_bytes=196956 dimensions=2304x1296 quality=Some(51) encode_attempts=10 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,196956,6b6da57fd355d388e8ebe32526278266a3daf36eb7a7a5193f8477c0663885c2,10,2304x1296,true
+noise,moz-dqt,2,200000,0,9.053579683008138,8.885816,0.14796299999999998,69304,"format=Jpeg input_bytes=1022240 output_bytes=196569 dimensions=2560x1440 quality=Some(59) encode_attempts=8 resized=false backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,196569,ffafffac7b657650c301739bdf594271a79d4e050689de2d0b0315c4b6b389be,8,2560x1440,false
+text,turbo,0,64000,0,0.3390054880292155,0.30935399999999996,0.01983,21312,"format=Jpeg input_bytes=105737 output_bytes=63984 dimensions=881x661 quality=Some(48) encode_attempts=10 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,63984,68296d66848ea6feeae21db81ea58d6abfe6365343a1c06b3b7be615f97c0980,10,881x661,true
+text,moz-dqt,0,64000,0,2.0092690360033885,1.987587,0.016028,22032,"format=Jpeg input_bytes=105737 output_bytes=62779 dimensions=921x691 quality=Some(51) encode_attempts=8 resized=true backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,62779,21c5066f9825f89477a4ea0f9f981f66b31ba5f7ca1250639542063cf5a8bd3f,8,921x691,true
+text,jpegli,0,64000,0,0.39274921297328547,0.358859,0.023923,21844,"format=Jpeg input_bytes=105737 output_bytes=63427 dimensions=898x674 quality=Some(46) encode_attempts=10 resized=true backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,63427,1dae2813c23488edd3996547333287df08fad193fe1fd0731f6137d8f4fcabc1,10,898x674,true
+text,moz-dqt,1,64000,0,1.8604238359839655,1.6931699999999998,0.052035,21688,"format=Jpeg input_bytes=105737 output_bytes=62779 dimensions=921x691 quality=Some(51) encode_attempts=8 resized=true backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,62779,21c5066f9825f89477a4ea0f9f981f66b31ba5f7ca1250639542063cf5a8bd3f,8,921x691,true
+text,jpegli,1,64000,0,0.40067886299220845,0.360765,0.023785999999999998,21764,"format=Jpeg input_bytes=105737 output_bytes=63427 dimensions=898x674 quality=Some(46) encode_attempts=10 resized=true backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,63427,1dae2813c23488edd3996547333287df08fad193fe1fd0731f6137d8f4fcabc1,10,898x674,true
+text,turbo,1,64000,0,0.4338055959669873,0.405612,0.016063,20980,"format=Jpeg input_bytes=105737 output_bytes=63984 dimensions=881x661 quality=Some(48) encode_attempts=10 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,63984,68296d66848ea6feeae21db81ea58d6abfe6365343a1c06b3b7be615f97c0980,10,881x661,true
+text,jpegli,2,64000,0,0.4626480739680119,0.393953,0.055709999999999996,21908,"format=Jpeg input_bytes=105737 output_bytes=63427 dimensions=898x674 quality=Some(46) encode_attempts=10 resized=true backend=Some(Jpegli) search=Some(LogSecant) adaptive_dqt=false
+",,63427,1dae2813c23488edd3996547333287df08fad193fe1fd0731f6137d8f4fcabc1,10,898x674,true
+text,turbo,2,64000,0,0.38522974599618465,0.35117899999999996,0.024218999999999997,21048,"format=Jpeg input_bytes=105737 output_bytes=63984 dimensions=881x661 quality=Some(48) encode_attempts=10 resized=true backend=Some(Turbo444) search=Some(LogSecant) adaptive_dqt=false
+",,63984,68296d66848ea6feeae21db81ea58d6abfe6365343a1c06b3b7be615f97c0980,10,881x661,true
+text,moz-dqt,2,64000,0,1.5968410880304873,1.562106,0.024031999999999998,21876,"format=Jpeg input_bytes=105737 output_bytes=62779 dimensions=921x691 quality=Some(51) encode_attempts=8 resized=true backend=Some(Mozjpeg) search=Some(LogSecant) adaptive_dqt=true
+",,62779,21c5066f9825f89477a4ea0f9f981f66b31ba5f7ca1250639542063cf5a8bd3f,8,921x691,true

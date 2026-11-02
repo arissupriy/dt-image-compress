@@ -1,0 +1,30 @@
+{
+  "record_kind": "post-run verification supplement; not metadata captured during fixture execution",
+  "verified_at_utc": "2026-11-02T23:01:55.351848+00:00",
+  "original_fixture_environment_sha256": "dcc07ff21b599c3d8252c66610ed36b2c83cbaae36b7414a0d8fa4dcc4cbf04d",
+  "measured_runner_snapshot": "../snapshots/jpeg_validation-fixtures.py",
+  "measured_runner_sha256": "52158f427f04a5de8ff67bf787fa8f20112aedd9a772edc7e60079a20f04e964",
+  "scorer_sha256": "0ca162249031f0dc690c9e2ac2f20f061e9af8a606ff185f34aeb0c4be1b7f26",
+  "scorer_evidence": "Matches the unchanged scorer hash recorded by the completed104-output corpus evaluation; fixture measurement imports this scorer.",
+  "versions_verified_after_run": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "Pillow": "12.3.0"
+  },
+  "ssim": {
+    "luma": "0.299R+0.587G+0.114B on nonlinear8bitRGB",
+    "window": 11,
+    "sigma": 1.5,
+    "K1": 0.01,
+    "K2": 0.03,
+    "data_range": 255,
+    "covariance": "population",
+    "border_crop": 5,
+    "scale": "full original resolution; no SSIM pre-downsample"
+  },
+  "decoder": "Pillow RGB + ImageOps.exif_transpose; resized outputs restored with Pillow Lanczos3",
+  "psnr_protocol": "recomputed with this decoder/restoration; distinct from prior Rust image scores",
+  "corpus_environment": "../../2026-11-03-jpeg-ssim/environment.json",
+  "corpus_environment_sha256": "35e23d063de8a03777435ba10072664ee39f9159490a17398e97a0a05d7a06f4",
+  "runner_difference": "The performance snapshot adds only CPU-affinity selection/recording inside performance_run; the fixture snapshot matches the original fixture environment hash."
+}

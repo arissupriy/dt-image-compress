@@ -68,6 +68,23 @@ Delapan metode pada target200.000 bytes dan limit desktop yang sama:
 
 Bandingkan T1/T0 dan M1/M0 untuk pengaruh pencarian (kualitas, ukuran, dimensi, probe); M2/M1 untuk DQT; M3/M2 dan J1/J0 untuk prefilter; serta encoder pada budget identik. Encoder memiliki skala quality berbeda. Semua metode memakai satu encoder per percobaan, resize hanya dengan izin suite, dan batas32 encode termasuk probe filter. Pemilihan dimensi dapat berbeda, sehingga perbandingan memasukkan dampak resize. Satu run tanpa warmup menilai keluaran deterministik dan jumlah probe, bukan keunggulan waktu atau memori mobile.
 
+## SSIM offline pada keluaran yang sudah ada
+
+```sh
+python3 -m pip install -r tools/requirements-evaluation.txt
+python3 tools/jpeg_quality.py --samples samples --run samples/results/jpeg-native-2026-11-02 --output samples/results/jpeg-quality-repeat
+```
+
+Tidak ada encode ulang. Scorer memeriksa hash sumber sebelum/sesudah, ukuran JPEG dan hash pasangan untuk cache identik. Luma nonlinear `0.299R+0.587G+0.114B`, window Gaussian11×11/sigma1,5, population covariance, range255, K1/K2=0,01/0,03, valid crop5; resolusi asli tanpa SSIM pre-downsample. Decode/restorasi menggunakan Pillow sehingga RGB PSNR dihitung ulang dan diberi label terpisah dari hasil Rust-image. Tes membandingkan tile dengan referensi weighted-window independen. [Hasil SSIM](benchmarks/jpeg-ssim-2026-11-03.md) memuat parameter, data dan batas interpretasi.
+
+## ROI dan pengukuran proses terpisah
+
+`tools/jpeg_validation.py fixtures` membuat dua PNG1024×768 (teks Latin12/18/28 dan gradien gray/dark/color). Lima metode mencakup Turbo/MozJPEG-DQT/jpegli serta dua varian filter rate-coupled; setiap fixture mempunyai dua target, empat wilayah penilaian termasuk seluruh gambar. Hash font, binary/library, referensi dan runner disimpan. Recall/precision threshold luma128 hanya proxy piksel foreground, bukan OCR; SSIM/PSNR gradien bukan jaminan bebas banding.
+
+`tools/jpeg_validation.py performance` memakai tiga input terpilih dan tiga backend tanpa filter, satu warmup per kelompok, tiga pengulangan terukur, urutan metode berotasi dan affinity satu CPU. Setiap helper baru meluncurkan tepat satu anak CLI; timer seluruh proses dan Linux `ru_maxrss` anak tidak memasukkan metrik kualitas atau kompilasi. Angka membandingkan pipeline target-byte dengan resize yang diizinkan, bukan throughput pada resolusi tetap. Frekuensi CPU/beban OS tidak dikendalikan; jangan mengekstrapolasi tiga input host menjadi performa mobile.
+
+Kedua mode membutuhkan release binary dan `--library-dir` berisi bundled shared TurboJPEG yang cocok. Output harus direktori baru. [Laporan validasi](benchmarks/jpeg-validation-2026-11-03.md) menyimpan perintah, hasil20 JPEG/80 skor ROI/27 pengukuran, snapshot runner dan suplemen provenance yang eksplisit dicatat setelah run. Build Android ARM64 default dicatat terpisah dari eksekusi perangkat yang belum tersedia.
+
 ## Gate sebelum mengubah default
 
 Tambahkan corpus riil berlisensi, pisahkan tuning/evaluasi, gunakan metrik ROI dan pemeriksaan manusia, ukur pada perangkat sasaran, dan bandingkan denoise sederhana/backend alternatif. Data sintetis tidak membenarkan klaim penghematan umum, text preservation, atau latency mobile. Feature eksperimen tetap mati secara default sampai pengujian tersebut selesai.
