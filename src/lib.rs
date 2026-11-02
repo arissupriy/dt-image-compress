@@ -45,6 +45,7 @@ pub struct CompressionReport {
     pub metadata_policy: MetadataPolicy,
     pub warnings: Vec<String>,
     pub jpeg_backend: Option<JpegBackend>,
+    pub target_search: Option<TargetSearch>,
     pub prefilter_threshold: Option<f32>,
 }
 
@@ -212,11 +213,17 @@ where
                 if let Some(target) = options.target_bytes {
                     let budget = options.limits.max_encode_attempts - attempts;
                     let mut encoded = 0;
-                    let result = solver::search_target(target, budget, |q| {
+                    let encode = |q| {
                         emit(ProgressStage::Encode, attempts + encoded)?;
                         encoded += 1;
                         codecs::jpeg::encode(working, q, icc.as_deref(), options)
-                    })?;
+                    };
+                    let result = match options.target_search {
+                        TargetSearch::Binary => solver::search_target(target, budget, encode),
+                        TargetSearch::LogSecant => {
+                            solver::search_target_log_secant(target, budget, encode)
+                        }
+                    }?;
                     attempts += result.attempts;
                     smallest = smallest.min(result.smallest);
                     if let Some(best) = result.best {
@@ -314,6 +321,8 @@ where
         metadata_policy: options.metadata,
         warnings,
         jpeg_backend: (format == OutputFormat::Jpeg).then_some(options.jpeg_backend),
+        target_search: (format == OutputFormat::Jpeg && options.target_bytes.is_some())
+            .then_some(options.target_search),
         prefilter_threshold,
     };
     Ok(CompressionOutput { bytes, report })

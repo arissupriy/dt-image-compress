@@ -22,6 +22,23 @@ fn meets_byte_target_and_keeps_best_measured_quality() {
 }
 
 #[test]
+fn log_secant_and_binary_agree_on_real_jpeg_quality_and_enforce_the_cap() {
+    let input = common::jpeg(98);
+    let mut options = CompressionOptions {
+        target_bytes: Some(20_000),
+        ..Default::default()
+    };
+    let binary = run(&input, &options).unwrap();
+    options.target_search = TargetSearch::LogSecant;
+    let secant = run(&input, &options).unwrap();
+    assert_eq!(secant.report.quality, binary.report.quality);
+    assert_eq!(secant.bytes, binary.bytes);
+    assert_eq!(secant.report.target_search, Some(TargetSearch::LogSecant));
+    assert!(secant.bytes.len() <= 20_000);
+    assert!(secant.report.encode_attempts <= options.limits.max_encode_attempts);
+}
+
+#[test]
 fn unreachable_target_is_an_error_not_an_oversized_success() {
     let options = CompressionOptions {
         target_bytes: Some(10),

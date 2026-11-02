@@ -26,6 +26,12 @@ pub enum JpegBackend {
     Turbo420,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TargetSearch {
+    Binary,
+    LogSecant,
+}
+
 #[derive(Debug, Clone)]
 pub struct ProcessingLimits {
     pub max_input_bytes: u64,
@@ -57,6 +63,7 @@ pub struct CompressionOptions {
     pub metadata: MetadataPolicy,
     pub limits: ProcessingLimits,
     pub jpeg_backend: JpegBackend,
+    pub target_search: TargetSearch,
     #[cfg(feature = "experimental-prefilter")]
     pub prefilter: Option<crate::experimental::PrefilterOptions>,
 }
@@ -73,6 +80,7 @@ impl Default for CompressionOptions {
             metadata: MetadataPolicy::RemovePrivate,
             limits: ProcessingLimits::default(),
             jpeg_backend: JpegBackend::Turbo444,
+            target_search: TargetSearch::Binary,
             #[cfg(feature = "experimental-prefilter")]
             prefilter: None,
         }

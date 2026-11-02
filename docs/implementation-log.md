@@ -69,3 +69,9 @@ Final command results and benchmark conclusions follow below.
 - Peak whole benchmark RSS825,840KiB includes references/metrics. Desktop limits50MP/1GiB are explicit and core defaults20MP/256MiB unchanged. One measurement/no warmup plus concurrent build activity prevents timing conclusions.
 - Independent review's resize metadata wording was corrected in the script and saved manifest. No metric data was altered. Corpus report: docs/benchmarks/jpeg-suite-2026-11-02.md.
 - Final cargo test --all-features --all-targets: **47 passed** (including ramp/corner coverage). Default tests including doctest, default/all-feature Clippy -D warnings, fmt, benchmark self-check and release CLI build passed. Remaining research/platform gates are listed in the report and root plan.
+
+## Bracketed log-secant
+
+- RED: the new exponential-size test failed when log-secant delegated to binary search (same probe count). GREEN: endpoint measurements and interpolation in log bytes reduce probes on that curve while preserving the same highest feasible quality. Midpoint fallback prevents stalled interpolation; every candidate is measured and the encode budget remains bounded.
+- Added explicit `TargetSearch` library/CLI selection and report field. Binary stays the default pending corpus comparison. This is a size-search method, composable with an encoder/filter, not another JPEG encoder.
+- Two solver regressions pass, including plateaus, unreachable targets, and nonmonotonic measured sizes. All 11 JPEG contract tests pass, including byte-identical real-JPEG results from binary/log-secant at the same selected quality.

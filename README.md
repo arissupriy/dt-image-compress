@@ -13,6 +13,8 @@ Mesin kompresi gambar offline untuk DailyTools dan aplikasi Rust lain. Source in
 
 Semua hasil sukses dengan target memenuhi `output_bytes <= target_bytes`. Jika tidak tercapai dalam batas kualitas, dimensi, dan jumlah encode, hasilnya `TargetUnreachable`, tanpa output sukses yang terlalu besar. Solver mengembalikan kandidat feasible terbaik yang diukur, bukan jaminan optimum global terhadap semua setting encoder.
 
+Pencarian quality dapat dipilih dengan `--search binary` (default) atau `--search log-secant`, serta `CompressionOptions::target_search` di library. Log-secant mengukur endpoint quality 95/40, menginterpolasi log ukuran di dalam bracket feasible/infeasible, dan beralih ke midpoint saat konvergensi lambat atau interpolasi tidak valid. Kedua metode menjaga hard cap dan budget encode; keduanya memakai asumsi ukuran yang kira-kira monoton terhadap quality. Log-secant tidak mengubah piksel atau encoder.
+
 ## Menjalankan CLI
 
 MSRV deklaratif Rust 1.88, dengan pengujian CI disiapkan untuk memverifikasinya. Build memerlukan C toolchain dan CMake untuk dependency native libdeflate serta libjpeg-turbo. Pengujian lokal pertama menggunakan Rust 1.93.0 di Linux x86_64; MSRV dan platform lain belum diverifikasi secara lokal.

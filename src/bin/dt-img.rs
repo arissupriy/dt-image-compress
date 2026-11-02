@@ -43,6 +43,9 @@ struct Args {
     preserve_metadata: bool,
     #[arg(long, value_enum, default_value = "turbo444")]
     jpeg_backend: Backend,
+    /// Quality search for a byte target
+    #[arg(long, value_enum, default_value = "binary")]
+    search: Search,
     /// Opt-in tiled structure-tensor prefilter; experimental
     #[cfg(feature = "experimental-prefilter")]
     #[arg(long)]
@@ -70,6 +73,12 @@ enum Backend {
     Image,
     Turbo444,
     Turbo420,
+}
+
+#[derive(Clone, Copy, ValueEnum)]
+enum Search {
+    Binary,
+    LogSecant,
 }
 
 fn parse_size(s: &str) -> Result<u64, String> {
@@ -146,6 +155,10 @@ fn run(args: Args) -> Result<(), Box<dyn Error>> {
             Backend::Image => JpegBackend::ImageBaseline,
             Backend::Turbo444 => JpegBackend::Turbo444,
             Backend::Turbo420 => JpegBackend::Turbo420,
+        },
+        target_search: match args.search {
+            Search::Binary => TargetSearch::Binary,
+            Search::LogSecant => TargetSearch::LogSecant,
         },
         target_bytes: args.target,
         format: match args.format {
