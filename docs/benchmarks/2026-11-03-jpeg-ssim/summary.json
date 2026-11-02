@@ -1,0 +1,81 @@
+{
+  "rows": 104,
+  "unique_measured_jpegs": 78,
+  "methods": {
+    "J0-jpegli-log": {
+      "mean_ssim_y": 0.7309250878354895,
+      "mean_psnr_rgb_pillow": 30.933367821389755
+    },
+    "J1-jpegli-rate-log": {
+      "mean_ssim_y": 0.72513346490345,
+      "mean_psnr_rgb_pillow": 30.875531268124362
+    },
+    "M0-moz-binary": {
+      "mean_ssim_y": 0.7197521244161414,
+      "mean_psnr_rgb_pillow": 30.923882692937713
+    },
+    "M1-moz-log": {
+      "mean_ssim_y": 0.7197521244161414,
+      "mean_psnr_rgb_pillow": 30.923882692937713
+    },
+    "M2-moz-dqt-log": {
+      "mean_ssim_y": 0.7188206226692425,
+      "mean_psnr_rgb_pillow": 30.935034364297138
+    },
+    "M3-moz-dqt-rate-log": {
+      "mean_ssim_y": 0.7151535064067901,
+      "mean_psnr_rgb_pillow": 30.928730902404162
+    },
+    "T0-turbo-binary": {
+      "mean_ssim_y": 0.7256233430186314,
+      "mean_psnr_rgb_pillow": 30.802739378411978
+    },
+    "T1-turbo-log": {
+      "mean_ssim_y": 0.7256233430186314,
+      "mean_psnr_rgb_pillow": 30.802739378411978
+    }
+  },
+  "pairs": {
+    "M1-moz-log vs T1-turbo-log": {
+      "wins": 4,
+      "ties": 0,
+      "losses": 9,
+      "mean_delta": -0.005871218602489894,
+      "min_delta": -0.022030179263606675,
+      "max_delta": 0.001639942361494784
+    },
+    "J0-jpegli-log vs T1-turbo-log": {
+      "wins": 11,
+      "ties": 0,
+      "losses": 2,
+      "mean_delta": 0.0053017448168581,
+      "min_delta": -9.425881447688855e-05,
+      "max_delta": 0.017353215172764336
+    },
+    "M2-moz-dqt-log vs M1-moz-log": {
+      "wins": 8,
+      "ties": 0,
+      "losses": 5,
+      "mean_delta": -0.0009315017468989878,
+      "min_delta": -0.005449173830326726,
+      "max_delta": 0.0005284903507530858
+    },
+    "M3-moz-dqt-rate-log vs M2-moz-dqt-log": {
+      "wins": 3,
+      "ties": 0,
+      "losses": 10,
+      "mean_delta": -0.003667116262452405,
+      "min_delta": -0.031895975475168425,
+      "max_delta": 0.0010487272211561899
+    },
+    "J1-jpegli-rate-log vs J0-jpegli-log": {
+      "wins": 0,
+      "ties": 0,
+      "losses": 13,
+      "mean_delta": -0.0057916229320394644,
+      "min_delta": -0.04370243744372326,
+      "max_delta": -1.118840894709372e-06
+    }
+  },
+  "tie_tolerance": 1e-12
+}
