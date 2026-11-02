@@ -1,0 +1,33 @@
+[package]
+name = "dt-image-compress"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+description = "Offline image compression with explicit byte targets and lossless PNG optimization"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/arissupriy/dt-image-compress"
+exclude = ["samples/", "benchmark-results/"]
+
+[features]
+default = []
+cli = ["dep:clap", "dep:tempfile", "dep:ctrlc"]
+experimental-prefilter = []
+
+[dependencies]
+image = { version = "0.25.10", default-features = false, features = ["jpeg", "png"] }
+turbojpeg = { version = "1.5.1", default-features = false, features = ["cmake"] }
+oxipng = { version = "10.2.1", default-features = false }
+thiserror = "2"
+clap = { version = "4.6", features = ["derive"], optional = true }
+tempfile = { version = "3.27", optional = true }
+ctrlc = { version = "3.5", optional = true }
+
+[[bin]]
+name = "dt-img"
+path = "src/bin/dt-img.rs"
+required-features = ["cli"]
+
+[profile.release]
+lto = "thin"
+strip = true
+

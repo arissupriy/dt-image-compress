@@ -1,0 +1,110 @@
+[
+  {
+    "sample": "document",
+    "method": "baseline",
+    "runs": 5,
+    "output_bytes": 49300,
+    "target_bytes": 49300,
+    "median_ms": 49.1186,
+    "p95_ms": 54.1637,
+    "psnr_rgb": "31.5051",
+    "text_pixel_psnr": "30.2845",
+    "quality": "60"
+  },
+  {
+    "sample": "document",
+    "method": "tensor",
+    "runs": 5,
+    "output_bytes": 48765,
+    "target_bytes": 49300,
+    "median_ms": 76.0817,
+    "p95_ms": 76.6856,
+    "psnr_rgb": "31.4521",
+    "text_pixel_psnr": "30.2788",
+    "quality": "60"
+  },
+  {
+    "sample": "gradient",
+    "method": "baseline",
+    "runs": 5,
+    "output_bytes": 8245,
+    "target_bytes": 8245,
+    "median_ms": 35.4759,
+    "p95_ms": 37.5885,
+    "psnr_rgb": "47.9993",
+    "text_pixel_psnr": "NaN",
+    "quality": "60"
+  },
+  {
+    "sample": "gradient",
+    "method": "tensor",
+    "runs": 5,
+    "output_bytes": 8245,
+    "target_bytes": 8245,
+    "median_ms": 65.5193,
+    "p95_ms": 69.7148,
+    "psnr_rgb": "47.9993",
+    "text_pixel_psnr": "NaN",
+    "quality": "60"
+  },
+  {
+    "sample": "sensor-noise",
+    "method": "baseline",
+    "runs": 5,
+    "output_bytes": 26909,
+    "target_bytes": 26909,
+    "median_ms": 45.7551,
+    "p95_ms": 47.0162,
+    "psnr_rgb": "29.5280",
+    "text_pixel_psnr": "NaN",
+    "quality": "60"
+  },
+  {
+    "sample": "sensor-noise",
+    "method": "tensor",
+    "runs": 5,
+    "output_bytes": 26470,
+    "target_bytes": 26909,
+    "median_ms": 89.3609,
+    "p95_ms": 99.1143,
+    "psnr_rgb": "29.5142",
+    "text_pixel_psnr": "NaN",
+    "quality": "71"
+  },
+  {
+    "sample": "fine-texture",
+    "method": "baseline",
+    "runs": 5,
+    "output_bytes": 91815,
+    "target_bytes": 91815,
+    "median_ms": 55.2853,
+    "p95_ms": 57.721,
+    "psnr_rgb": "26.9862",
+    "text_pixel_psnr": "NaN",
+    "quality": "60"
+  },
+  {
+    "sample": "fine-texture",
+    "method": "tensor",
+    "runs": 5,
+    "output_bytes": 91609,
+    "target_bytes": 91815,
+    "median_ms": 81.3961,
+    "p95_ms": 83.6908,
+    "psnr_rgb": "26.9639",
+    "text_pixel_psnr": "NaN",
+    "quality": "60"
+  },
+  {
+    "sample": "transparent",
+    "method": "png-lossless",
+    "runs": 5,
+    "output_bytes": 398,
+    "target_bytes": 0,
+    "median_ms": 13.6631,
+    "p95_ms": 15.3478,
+    "psnr_rgb": "inf",
+    "text_pixel_psnr": "nan",
+    "quality": ""
+  }
+]

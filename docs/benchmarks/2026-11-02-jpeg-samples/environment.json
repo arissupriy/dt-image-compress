@@ -1,0 +1,53 @@
+{
+  "platform": "Linux-7.1.5+kali-amd64-x86_64-with-glibc2.43",
+  "python": "3.14.7",
+  "rustc": "rustc 1.93.0 (254b59607 2026-01-19)",
+  "iterations": 3,
+  "warmups_per_jpeg_method": 1,
+  "dataset": "local user JPEG samples; not a representative corpus",
+  "rss_scope": "whole benchmark process, excluding compilation; not per image",
+  "rss_measured": true,
+  "rss_source": "Linux /proc/self/status VmHWM when available",
+  "jpeg_encoder": "image::codecs::jpeg::JpegEncoder",
+  "quality_range": [
+    40,
+    95
+  ],
+  "resize": "explicit B1/E1-resize methods only",
+  "psnr_reference": "independent decoded original JPEG, EXIF-normalized; resized outputs restored with Lanczos3",
+  "prefilter": {
+    "threshold": 0.04,
+    "coherence_boost": 4.0
+  },
+  "cargo_lock_sha256": "ff48202a75e5cf9c98f10b3ed863025e89b51b168ceb4e16d26632aa1fab7c06",
+  "rust_source_sha256": {
+    "src/bin/dt-img.rs": "365440ca60319c7835a9333f5fc9157de04f908f56de7b8ff2b64574f7361d45",
+    "src/codecs/jpeg.rs": "a61b095a8053f8ec2331147bd8b53fb300c283796cd0349eac467104feb4ccc9",
+    "src/codecs/mod.rs": "65fefe14db814def2f30cddaabf4f02c2c362402cf099219f3d46a97d9eb3a84",
+    "src/codecs/png.rs": "e574e0279e051bda5c971923cb07cec7051da350c0efa0c41841bff032d903b5",
+    "src/error.rs": "28e3bd83a0ee50b4ca6833d7e873879cafb835f24a7fdfeba8bd94930510d1f6",
+    "src/experimental.rs": "5e9766929a1e44f912ae0fe129d898c0ab7490b800c79b0cb74f8a1faa498126",
+    "src/input.rs": "b708150e8c30ab39f0aa921d7565efd7a3f31f6b92bdee681a513057ba4a24a1",
+    "src/lib.rs": "d95045503c1058bea445da11542c074844d4420360ab848864120c4804337d7e",
+    "src/options.rs": "ec922e9cc548d31aca5ea26f4540eff7dcb1e4c304d7c90aa23a6eb6d039422f",
+    "src/solver.rs": "d2c5dd3d5b4cfb450e63db04d4200849a758c869b687d58ab415269076f2e28d",
+    "examples/benchmark.rs": "975c12ddfbe3932229f350e4bd0bf8e3ce5953e36a1c6525c6991f4e0d557454"
+  },
+  "input_sha256": {
+    "sample-01": {
+      "filename": "sample-10mb.jpg",
+      "bytes": 9962054,
+      "sha256": "32535fe694ed6d841d315ec992dfac0204a9d349b79093288d53411f98259a6e"
+    },
+    "sample-02": {
+      "filename": "sample-1mb.jpg",
+      "bytes": 1022240,
+      "sha256": "429f85c9592bba3135e555f7ebcdeb4a0d9127cbe065e481b4b903a84851b2f3"
+    },
+    "sample-03": {
+      "filename": "sample-5mb.jpg",
+      "bytes": 5127247,
+      "sha256": "bf171bf6cdfec77b709b9416b3de23b3305dbbbd26ef818be2745447f505eb86"
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "platform": "Linux-7.1.5+kali-amd64-x86_64-with-glibc2.43",
+  "python": "3.14.7",
+  "rustc": "rustc 1.93.0 (254b59607 2026-01-19)",
+  "iterations": 5,
+  "warmups_per_jpeg_method": 1,
+  "dataset": "five synthetic smoke fixtures; not a research evaluation corpus",
+  "rss_scope": "whole benchmark process, excluding compilation; not per image",
+  "rss_measured": true,
+  "rss_source": "Linux /proc/self/status VmHWM when available",
+  "jpeg_encoder": "image::codecs::jpeg::JpegEncoder",
+  "quality_range": [
+    40,
+    95
+  ],
+  "resize": false,
+  "prefilter": {
+    "threshold": 0.04,
+    "coherence_boost": 4.0
+  },
+  "cargo_lock_sha256": "ff48202a75e5cf9c98f10b3ed863025e89b51b168ceb4e16d26632aa1fab7c06",
+  "rust_source_sha256": {
+    "src/bin/dt-img.rs": "c9ff823bd59a3aca5ffb73d73258b13b6d5285ff760f1447463b4639d6c13351",
+    "src/codecs/jpeg.rs": "a61b095a8053f8ec2331147bd8b53fb300c283796cd0349eac467104feb4ccc9",
+    "src/codecs/mod.rs": "65fefe14db814def2f30cddaabf4f02c2c362402cf099219f3d46a97d9eb3a84",
+    "src/codecs/png.rs": "e574e0279e051bda5c971923cb07cec7051da350c0efa0c41841bff032d903b5",
+    "src/error.rs": "28e3bd83a0ee50b4ca6833d7e873879cafb835f24a7fdfeba8bd94930510d1f6",
+    "src/experimental.rs": "5894ceb8d07e390aefe0465256483138299c68ee8ff43d49b7bbaf0c0eb8ab20",
+    "src/input.rs": "b708150e8c30ab39f0aa921d7565efd7a3f31f6b92bdee681a513057ba4a24a1",
+    "src/lib.rs": "87bd9a2c42bd2ff105305a2d4f0ae35310bbd4587e683e2aad0096ca142a8684",
+    "src/options.rs": "ec922e9cc548d31aca5ea26f4540eff7dcb1e4c304d7c90aa23a6eb6d039422f",
+    "src/solver.rs": "d2c5dd3d5b4cfb450e63db04d4200849a758c869b687d58ab415269076f2e28d",
+    "examples/benchmark.rs": "fd0dbc4166b005b2727f96a92bde0318306454d011ed1e680b0efccaed48d15f"
+  },
+  "input_sha256": {
+    "gradient-input.png": "c9bd095098f3ca439056dbbd3beb195252ca8ded48d8a5d4c45095b5b1efb8e7",
+    "sensor-noise-input.png": "e7287cbd75d879e22219dc3b99f84649723692ecc55212f4d24c1a51c76ff39f",
+    "fine-texture-input.png": "9c25ac6a5b878570a257aaf0523fb4c96282ff229606e8c4c56bca06adeb1a36",
+    "transparent-input.png": "78a9f74d96ad31213569463c8fb4235bbd5fbb2b5f30ab346252bcee635cef30",
+    "document-input.png": "241bcaecb016092aa4ac28dc4f2250e382f9b9136396a97a806e9f5bb8b335b7"
+  }
+}
