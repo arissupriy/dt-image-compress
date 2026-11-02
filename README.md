@@ -104,6 +104,8 @@ Mode `--samples` menguji JPEG lokal pada 200 KB, 500 KB, dan 1 MB, tanpa/dengan 
 
 [Laporan13 JPEG/tujuh metode](docs/benchmarks/jpeg-suite-2026-11-02.md):91/91 keluaran memenuhi200KB. Encoder teroptimasi444 memberi PSNR lebih tinggi pada12/13 gambar vs baseline; manfaat coupling tetap bercampur. Jalankan `python3 tools/benchmark.py --samples samples --jpeg-suite --iterations 1 --output samples/results/jpeg-suite-run` untuk mereproduksi dengan profil desktop50MP/1GiB. Output berada di `samples/results/`, file asli tidak diubah.
 
+Suite native menjalankan delapan ablation encoder/DQT/pencarian/filter pada corpus yang sama: `python3 tools/benchmark.py --samples samples --jpeg-native-suite --iterations 1 --output samples/results/jpeg-native-run`. Script menyiapkan shared vendor TurboJPEG dan menjalankan executable melalui Cargo agar memakai native library yang benar. Detail konfigurasi dan pasangan pembandingan ada di [protokol benchmark](docs/benchmark-protocol.md).
+
 ## Verifikasi
 
 ```sh

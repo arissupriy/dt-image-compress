@@ -45,6 +45,29 @@ Corpus foto resolusi asli mencakup input di atas20MP. Mode desktop ini menaikkan
 
 Satu repetisi tanpa warmup dipakai untuk perbandingan ukuran/kualitas deterministik; waktu yang ikut tercatat bukan dasar klaim latency atau speed-up. Jalankan repetisi/perangkat terisolasi jika performa menjadi objek penelitian. Mode ini mengisi ablation B2/E2/E3 yang belum ada pada snapshot awal; hasil positif dan regresi harus dilaporkan bersama.
 
+## Ablation native JPEG, DQT, dan log-secant
+
+```sh
+python3 tools/benchmark.py --samples samples --jpeg-native-suite --iterations 1 --output samples/results/jpeg-native-run
+```
+
+Linux/Rust>=1.90 diperlukan untuk ketiga backend dalam satu proses. Script mengaktifkan feature `experimental-prefilter,mozjpeg,jpegli`, memaksa shared vendor TurboJPEG untuk mencegah konflik simbol, lalu memakai `cargo run` agar runtime memuat library hasil build yang tepat.
+
+Delapan metode pada target200.000 bytes dan limit desktop yang sama:
+
+| Metode | Encoder444 | Pencarian | DQT/AQ | Prefilter |
+| --- | --- | --- | --- | --- |
+| T0-turbo-binary | TurboJPEG | Binary | Standar | Tidak |
+| T1-turbo-log | TurboJPEG | Log-secant | Standar | Tidak |
+| M0-moz-binary | MozJPEG | Binary | Q_OPT mati | Tidak |
+| M1-moz-log | MozJPEG | Log-secant | Q_OPT mati | Tidak |
+| M2-moz-dqt-log | MozJPEG | Log-secant | Q_OPT aktif | Tidak |
+| J0-jpegli-log | Google jpegli | Log-secant | AQ native aktif | Tidak |
+| M3-moz-dqt-rate-log | MozJPEG | Log-secant | Q_OPT aktif | Rate-coupled tensor |
+| J1-jpegli-rate-log | Google jpegli | Log-secant | AQ native aktif | Rate-coupled tensor |
+
+Bandingkan T1/T0 dan M1/M0 untuk pengaruh pencarian (kualitas, ukuran, dimensi, probe); M2/M1 untuk DQT; M3/M2 dan J1/J0 untuk prefilter; serta encoder pada budget identik. Encoder memiliki skala quality berbeda. Semua metode memakai satu encoder per percobaan, resize hanya dengan izin suite, dan batas32 encode termasuk probe filter. Pemilihan dimensi dapat berbeda, sehingga perbandingan memasukkan dampak resize. Satu run tanpa warmup menilai keluaran deterministik dan jumlah probe, bukan keunggulan waktu atau memori mobile.
+
 ## Gate sebelum mengubah default
 
 Tambahkan corpus riil berlisensi, pisahkan tuning/evaluasi, gunakan metrik ROI dan pemeriksaan manusia, ukur pada perangkat sasaran, dan bandingkan denoise sederhana/backend alternatif. Data sintetis tidak membenarkan klaim penghematan umum, text preservation, atau latency mobile. Feature eksperimen tetap mati secara default sampai pengujian tersebut selesai.

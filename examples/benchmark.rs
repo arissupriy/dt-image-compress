@@ -80,7 +80,16 @@ fn jpeg_samples(
     directory: &Path,
     samples: &Path,
     jpeg_suite: bool,
+    native_suite: bool,
 ) -> Result<(), Box<dyn Error>> {
+    #[cfg(not(all(
+        feature = "mozjpeg",
+        feature = "jpegli",
+        feature = "experimental-prefilter"
+    )))]
+    if native_suite {
+        return Err("native suite needs mozjpeg,jpegli,experimental-prefilter features".into());
+    }
     let mut paths: Vec<_> = fs::read_dir(samples)?
         .map(|entry| entry.map(|e| e.path()))
         .collect::<Result<_, _>>()?;
@@ -198,6 +207,16 @@ fn jpeg_samples(
             } else {
                 methods
             };
+            #[cfg(all(
+                feature = "mozjpeg",
+                feature = "jpegli",
+                feature = "experimental-prefilter"
+            ))]
+            let methods = if native_suite {
+                native_methods(&methods[0].1)
+            } else {
+                methods
+            };
             for (method, options) in methods {
                 eprintln!("{name} target={target} method={method}");
                 if !jpeg_suite {
@@ -273,6 +292,39 @@ fn jpeg_samples(
     Ok(())
 }
 
+#[cfg(all(
+    feature = "mozjpeg",
+    feature = "jpegli",
+    feature = "experimental-prefilter"
+))]
+fn native_methods(base: &CompressionOptions) -> Vec<(&'static str, CompressionOptions)> {
+    let mut turbo = base.clone();
+    turbo.jpeg_backend = JpegBackend::Turbo444;
+    turbo.target_search = TargetSearch::Binary;
+    let mut result = vec![("T0-turbo-binary", turbo.clone())];
+    turbo.target_search = TargetSearch::LogSecant;
+    result.push(("T1-turbo-log", turbo.clone()));
+    let mut moz = turbo.clone();
+    moz.jpeg_backend = JpegBackend::Mozjpeg;
+    moz.target_search = TargetSearch::Binary;
+    result.push(("M0-moz-binary", moz.clone()));
+    moz.target_search = TargetSearch::LogSecant;
+    result.push(("M1-moz-log", moz.clone()));
+    moz.adaptive_dqt = true;
+    result.push(("M2-moz-dqt-log", moz.clone()));
+    let mut jpegli = turbo;
+    jpegli.jpeg_backend = JpegBackend::Jpegli;
+    result.push(("J0-jpegli-log", jpegli.clone()));
+    let rate = Some(experimental::PrefilterOptions {
+        mode: experimental::PrefilterMode::RateCoupledTensor,
+        ..Default::default()
+    });
+    moz.prefilter = rate;
+    jpegli.prefilter = rate;
+    result.extend([("M3-moz-dqt-rate-log", moz), ("J1-jpegli-rate-log", jpegli)]);
+    result
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let mut args = std::env::args().skip(1);
     let repetitions: usize = args.next().unwrap_or("5".into()).parse()?;
@@ -282,8 +334,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err("repetitions must be positive".into());
     }
     if let Some(samples) = args.next() {
-        let jpeg_suite = args.next().as_deref() == Some("jpeg-suite");
-        jpeg_samples(repetitions, &directory, Path::new(&samples), jpeg_suite)?;
+        let mode = args.next();
+        let native_suite = mode.as_deref() == Some("jpeg-native-suite");
+        let jpeg_suite = mode.as_deref() == Some("jpeg-suite") || native_suite;
+        jpeg_samples(
+            repetitions,
+            &directory,
+            Path::new(&samples),
+            jpeg_suite,
+            native_suite,
+        )?;
         if let Ok(status) = fs::read_to_string("/proc/self/status")
             && let Some(peak) = linux_peak_rss_kib(&status)
         {
