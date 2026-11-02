@@ -18,6 +18,7 @@ fn meets_byte_target_and_keeps_best_measured_quality() {
     assert_eq!(out.report.output_bytes, out.bytes.len() as u64);
     assert!(out.report.quality.unwrap() > 40);
     assert!(out.report.encode_attempts <= options.limits.max_encode_attempts);
+    assert_eq!(out.report.target_search, Some(TargetSearch::LogSecant));
     assert_eq!(image::load_from_memory(&out.bytes).unwrap().width(), 512);
 }
 
@@ -26,6 +27,7 @@ fn log_secant_and_binary_agree_on_real_jpeg_quality_and_enforce_the_cap() {
     let input = common::jpeg(98);
     let mut options = CompressionOptions {
         target_bytes: Some(20_000),
+        target_search: TargetSearch::Binary,
         ..Default::default()
     };
     let binary = run(&input, &options).unwrap();

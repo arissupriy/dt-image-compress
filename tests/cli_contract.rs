@@ -30,6 +30,7 @@ fn produces_decodable_output_without_overwriting_any_existing_file() {
         String::from_utf8_lossy(&result.stderr)
     );
     let bytes = fs::read(&output).unwrap();
+    assert!(String::from_utf8_lossy(&result.stderr).contains("search=Some(LogSecant)"));
     assert!(bytes.len() <= 20_000);
     image::load_from_memory(&bytes).unwrap();
     let second = command()

@@ -13,7 +13,7 @@ Mesin kompresi gambar offline untuk DailyTools dan aplikasi Rust lain. Source in
 
 Semua hasil sukses dengan target memenuhi `output_bytes <= target_bytes`. Jika tidak tercapai dalam batas kualitas, dimensi, dan jumlah encode, hasilnya `TargetUnreachable`, tanpa output sukses yang terlalu besar. Solver mengembalikan kandidat feasible terbaik yang diukur, bukan jaminan optimum global terhadap semua setting encoder.
 
-Pencarian quality dapat dipilih dengan `--search binary` (default) atau `--search log-secant`, serta `CompressionOptions::target_search` di library. Log-secant mengukur endpoint quality 95/40, menginterpolasi log ukuran di dalam bracket feasible/infeasible, dan beralih ke midpoint saat konvergensi lambat atau interpolasi tidak valid. Kedua metode menjaga hard cap dan budget encode; keduanya memakai asumsi ukuran yang kira-kira monoton terhadap quality. Log-secant tidak mengubah piksel atau encoder.
+Pencarian quality default adalah `--search log-secant`; `--search binary` tersedia sebagai kontrol, serta `CompressionOptions::target_search` di library. Log-secant mengukur endpoint quality 95/40, menginterpolasi log ukuran di dalam bracket feasible/infeasible, dan beralih ke midpoint saat konvergensi lambat atau interpolasi tidak valid. Kedua metode menjaga hard cap dan budget encode; keduanya memakai asumsi ukuran yang kira-kira monoton terhadap quality. Pada13 JPEG, log-secant menghasilkan bytes identik dengan binary pada TurboJPEG/MozJPEG dan mengurangi total encode223→138/210→133. Log-secant tidak mengubah piksel atau encoder.
 
 ## Menjalankan CLI
 
@@ -105,6 +105,8 @@ Mode `--samples` menguji JPEG lokal pada 200 KB, 500 KB, dan 1 MB, tanpa/dengan 
 [Laporan13 JPEG/tujuh metode](docs/benchmarks/jpeg-suite-2026-11-02.md):91/91 keluaran memenuhi200KB. Encoder teroptimasi444 memberi PSNR lebih tinggi pada12/13 gambar vs baseline; manfaat coupling tetap bercampur. Jalankan `python3 tools/benchmark.py --samples samples --jpeg-suite --iterations 1 --output samples/results/jpeg-suite-run` untuk mereproduksi dengan profil desktop50MP/1GiB. Output berada di `samples/results/`, file asli tidak diubah.
 
 Suite native menjalankan delapan ablation encoder/DQT/pencarian/filter pada corpus yang sama: `python3 tools/benchmark.py --samples samples --jpeg-native-suite --iterations 1 --output samples/results/jpeg-native-run`. Script menyiapkan shared vendor TurboJPEG dan menjalankan executable melalui Cargo agar memakai native library yang benar. Detail konfigurasi dan pasangan pembandingan ada di [protokol benchmark](docs/benchmark-protocol.md).
+
+[Hasil native 13 JPEG](docs/benchmarks/jpeg-native-2026-11-03.md): 104/104 memenuhi 200KB. Log-secant menghasilkan JPEG identik dengan binary pada Turbo/MozJPEG dengan total encode 38,12%/36,67% lebih sedikit, sehingga menjadi default. MozJPEG dan jpegli memberi keuntungan yang berbeda antarinput; DQT menambah keuntungan kecil, sedangkan filter merugikan PSNR pada 10/13 input untuk kedua backend baru. Pada `sample-1mb.jpg`, jpegli menghasilkan 191.323 bytes pada 2560×1440 tanpa resize. `samples/results/best-psnr-200KB-v2/` menyimpan pilihan setelah pengukuran dari kedua run, bukan auto-selection produksi.
 
 ## Verifikasi
 

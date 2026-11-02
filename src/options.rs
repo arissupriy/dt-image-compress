@@ -87,7 +87,7 @@ impl Default for CompressionOptions {
             metadata: MetadataPolicy::RemovePrivate,
             limits: ProcessingLimits::default(),
             jpeg_backend: JpegBackend::Turbo444,
-            target_search: TargetSearch::Binary,
+            target_search: TargetSearch::LogSecant,
             #[cfg(feature = "mozjpeg")]
             adaptive_dqt: false,
             #[cfg(feature = "experimental-prefilter")]

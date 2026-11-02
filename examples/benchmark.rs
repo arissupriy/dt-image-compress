@@ -141,6 +141,7 @@ fn jpeg_samples(
         for target in targets {
             let base = CompressionOptions {
                 jpeg_backend: JpegBackend::ImageBaseline,
+                target_search: TargetSearch::Binary,
                 target_bytes: Some(target),
                 limits: limits.clone(),
                 allow_resize: jpeg_suite,
@@ -369,6 +370,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .encode_image(&source)?;
         let base = CompressionOptions {
             jpeg_backend: JpegBackend::ImageBaseline,
+            target_search: TargetSearch::Binary,
             format: OutputFormat::Jpeg,
             target_bytes: Some(reference.len() as u64),
             ..Default::default()

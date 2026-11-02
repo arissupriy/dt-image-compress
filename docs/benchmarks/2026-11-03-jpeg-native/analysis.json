@@ -1,0 +1,171 @@
+{
+  "benchmark_source_commit": "d9186d23847e43f726103868c7f74b6664468ffc",
+  "dates_local": "2026-11-02 to 2026-11-03 Asia/Jakarta",
+  "rows": 104,
+  "samples": 13,
+  "methods": {
+    "J0-jpegli-log": {
+      "mean_psnr_rgb": 30.93019230769231,
+      "encode_attempts_total": 131,
+      "resized_count": 12
+    },
+    "J1-jpegli-rate-log": {
+      "mean_psnr_rgb": 30.872507692307693,
+      "encode_attempts_total": 146,
+      "resized_count": 12
+    },
+    "M0-moz-binary": {
+      "mean_psnr_rgb": 30.919907692307692,
+      "encode_attempts_total": 210,
+      "resized_count": 11
+    },
+    "M1-moz-log": {
+      "mean_psnr_rgb": 30.919907692307692,
+      "encode_attempts_total": 133,
+      "resized_count": 11
+    },
+    "M2-moz-dqt-log": {
+      "mean_psnr_rgb": 30.931015384615385,
+      "encode_attempts_total": 133,
+      "resized_count": 11
+    },
+    "M3-moz-dqt-rate-log": {
+      "mean_psnr_rgb": 30.924407692307692,
+      "encode_attempts_total": 136,
+      "resized_count": 11
+    },
+    "T0-turbo-binary": {
+      "mean_psnr_rgb": 30.79966153846154,
+      "encode_attempts_total": 223,
+      "resized_count": 13
+    },
+    "T1-turbo-log": {
+      "mean_psnr_rgb": 30.79966153846154,
+      "encode_attempts_total": 138,
+      "resized_count": 13
+    }
+  },
+  "pairs": {
+    "T1-turbo-log vs T0-turbo-binary": {
+      "wins": 0,
+      "ties": 13,
+      "losses": 0,
+      "mean_delta_psnr_db": 0.0,
+      "median_delta_psnr_db": 0.0,
+      "min_delta_psnr_db": 0.0,
+      "max_delta_psnr_db": 0.0
+    },
+    "M1-moz-log vs M0-moz-binary": {
+      "wins": 0,
+      "ties": 13,
+      "losses": 0,
+      "mean_delta_psnr_db": 0.0,
+      "median_delta_psnr_db": 0.0,
+      "min_delta_psnr_db": 0.0,
+      "max_delta_psnr_db": 0.0
+    },
+    "M1-moz-log vs T1-turbo-log": {
+      "wins": 12,
+      "ties": 0,
+      "losses": 1,
+      "mean_delta_psnr_db": 0.12024615384615495,
+      "median_delta_psnr_db": 0.07920000000000016,
+      "min_delta_psnr_db": -0.10190000000000055,
+      "max_delta_psnr_db": 0.5617000000000019
+    },
+    "J0-jpegli-log vs T1-turbo-log": {
+      "wins": 9,
+      "ties": 0,
+      "losses": 4,
+      "mean_delta_psnr_db": 0.1305307692307696,
+      "median_delta_psnr_db": 0.07600000000000051,
+      "min_delta_psnr_db": -0.2947999999999986,
+      "max_delta_psnr_db": 1.1813000000000002
+    },
+    "M2-moz-dqt-log vs M1-moz-log": {
+      "wins": 12,
+      "ties": 0,
+      "losses": 1,
+      "mean_delta_psnr_db": 0.01110769230769129,
+      "median_delta_psnr_db": 0.007400000000000517,
+      "min_delta_psnr_db": -0.00019999999999953388,
+      "max_delta_psnr_db": 0.03439999999999799
+    },
+    "M3-moz-dqt-rate-log vs M2-moz-dqt-log": {
+      "wins": 3,
+      "ties": 0,
+      "losses": 10,
+      "mean_delta_psnr_db": -0.006607692307691802,
+      "median_delta_psnr_db": -0.023399999999998755,
+      "min_delta_psnr_db": -0.14789999999999992,
+      "max_delta_psnr_db": 0.33149999999999835
+    },
+    "J1-jpegli-rate-log vs J0-jpegli-log": {
+      "wins": 3,
+      "ties": 0,
+      "losses": 10,
+      "mean_delta_psnr_db": -0.057684615384614994,
+      "median_delta_psnr_db": -0.02389999999999759,
+      "min_delta_psnr_db": -0.379099999999994,
+      "max_delta_psnr_db": 0.03429999999999467
+    },
+    "M3-moz-dqt-rate-log vs T1-turbo-log": {
+      "wins": 12,
+      "ties": 0,
+      "losses": 1,
+      "mean_delta_psnr_db": 0.12474615384615444,
+      "median_delta_psnr_db": 0.06810000000000116,
+      "min_delta_psnr_db": -0.0829000000000022,
+      "max_delta_psnr_db": 0.5638000000000005
+    }
+  },
+  "search": {
+    "T1-turbo-log": {
+      "identical_jpegs": 13,
+      "fewer_equal_more_probes": [
+        12,
+        1,
+        0
+      ],
+      "total_probe_reduction_percent": 38.11659192825112
+    },
+    "M1-moz-log": {
+      "identical_jpegs": 13,
+      "fewer_equal_more_probes": [
+        11,
+        1,
+        1
+      ],
+      "total_probe_reduction_percent": 36.66666666666667
+    }
+  },
+  "dqt_marker_changes": 13,
+  "integrity": {
+    "all_successes_within_target": true,
+    "all_original_hashes_match_previous": true,
+    "all_source_hashes_match_benchmark_commit": true,
+    "turbo_matches_previous_run": 13
+  },
+  "peak_process_rss_kib": 897116,
+  "selection": {
+    "method_counts": {
+      "M3-moz-dqt-rate-log": 2,
+      "B0-image": 1,
+      "J0-jpegli-log": 4,
+      "M2-moz-dqt-log": 4,
+      "E3-turbo420": 2
+    },
+    "run_counts": {
+      "native": 10,
+      "previous": 3
+    },
+    "wins_ties_losses_vs_previous_best": [
+      10,
+      3,
+      0
+    ],
+    "mean_delta_psnr_db_vs_previous_best": 0.09512307692307728,
+    "tie_break": "reported RGB PSNR (4 decimals), fewer bytes, fewer encodes, method name",
+    "production_auto_selection": false
+  }
+}

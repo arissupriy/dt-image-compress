@@ -44,7 +44,7 @@ struct Args {
     #[arg(long, value_enum, default_value = "turbo444")]
     jpeg_backend: Backend,
     /// Quality search for a byte target
-    #[arg(long, value_enum, default_value = "binary")]
+    #[arg(long, value_enum, default_value = "log-secant")]
     search: Search,
     /// Input-dependent MozJPEG table optimization (requires --jpeg-backend mozjpeg)
     #[cfg(feature = "mozjpeg")]

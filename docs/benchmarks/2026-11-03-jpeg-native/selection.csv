@@ -1,0 +1,14 @@
+sample,filename,run,method,output_bytes,psnr_rgb,quality,encode_attempts,width,height,resized,output_sha256
+sample-01,pexels-bibekghosh-14553713.jpg,native,M3-moz-dqt-rate-log,198238,38.9424,51,14,3724,2483,true,a6fcb03b604b23a2eb7328f5e3c9b061dc1a0e4e58dd2f8da453284cf0c5c274
+sample-02,pexels-izafi-33061425.jpg,previous,B0-image,198185,34.5721,59,25,2380,1587,true,617977581270cb3d4caa72cb78fce250dda74871afd578fa70dae9eb2a8a2737
+sample-03,pexels-king-siberia-1123639-2201541.jpg,native,J0-jpegli-log,199827,26.6024,68,9,1945,2917,true,d9565f390fefce7187485354fa3d55bb21cabb929c104f592ba14092ca21a93b
+sample-04,pexels-kseniachernaya-5767595.jpg,native,M2-moz-dqt-log,199530,36.1931,50,12,1775,2658,true,fc6a802f0d6a76768d6fcd0c5bf78e3246a12814d48aab02caca23ec1c3681c4
+sample-05,pexels-markusspiske-105003.jpg,native,J0-jpegli-log,197984,34.5071,51,11,2330,1553,true,f47fdf70880dccc9aafa22f2300aaf2a9fa4aeb59a905117c56559cc1519e678
+sample-06,pexels-myatezhny39-3570072.jpg,native,M2-moz-dqt-log,196756,32.1255,40,7,1830,1213,true,08c57e1b6ff5e0ec035307c5bf351aab33dc4485f46bfb67371e3e1b98205c72
+sample-07,pexels-pavel-danilyuk-6612793.jpg,native,J0-jpegli-log,196617,33.3191,62,11,2986,1994,true,3713d103a39006180f9474921f66ab8443d1cf6f82c5dab398083cab04aff752
+sample-08,pexels-sound-designer-s-k-pramanik-785950771-35870496.jpg,previous,E3-turbo420,199118,24.7943,40,19,1545,875,true,0c2ec7a1ec9347ced3b70abc21ff2afb4c78389cf5037266b2a5898d26a3eee4
+sample-09,pexels-tizzy-20472033.jpg,native,M2-moz-dqt-log,197173,31.9168,48,14,921,1382,true,8eef30567fa1fb0dfb500553935b411d0df26bec35ffc760daae97b0a37f7b04
+sample-10,pexels-zhanqun-cai-1507025-7640750.jpg,previous,E3-turbo420,198710,38.9175,47,13,2361,3542,true,1926cca71504906dfd15070251acf6e95b5c7dcef4f260988ab813376ddb0718
+sample-11,sample-10mb.jpg,native,M3-moz-dqt-rate-log,198389,14.6051,55,11,1290,726,true,ae0cadca01b6abcaca2b061f443c6c460aa37623170396886a736eaa2f9f0032
+sample-12,sample-1mb.jpg,native,J0-jpegli-log,191323,30.4627,59,6,2560,1440,false,4e439722fe1c94fc5f1da21ebc4ff739e419e6befb72a8cf45ee65daaffd052a
+sample-13,sample-5mb.jpg,native,M2-moz-dqt-log,198580,26.6283,60,10,2302,1295,true,3a47667c7c6bfc945aac74f2c7d3400b722b4a015bb9c7c5d87cf0d464d69825
