@@ -66,6 +66,7 @@ def main():
     parser.add_argument("--iterations", type=int, default=5)
     parser.add_argument("--output", type=Path, default=ROOT / "benchmark-results")
     parser.add_argument("--samples", type=Path, help="local JPEG directory; originals are never copied")
+    parser.add_argument("--jpeg-suite", action="store_true", help="200KB JPEG backend/filter ablation with desktop resource limits")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     self_test()
@@ -74,6 +75,8 @@ def main():
         return
     if args.iterations < 1:
         parser.error("iterations must be positive")
+    if args.jpeg_suite and not args.samples:
+        parser.error("--jpeg-suite requires --samples")
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=False)
     subprocess.run(["cargo", "build", "--locked", "--release", "--example", "benchmark",
@@ -85,6 +88,8 @@ def main():
         if not samples:
             parser.error("no JPEG samples found")
         command.append(str(args.samples.resolve()))
+        if args.jpeg_suite:
+            command.append("jpeg-suite")
     run = subprocess.run(command, cwd=ROOT, check=True, stdout=subprocess.PIPE, text=True)
     (output / "results.csv").write_text(run.stdout)
     summary = summarize(list(csv.DictReader(io.StringIO(run.stdout))))
@@ -96,15 +101,17 @@ def main():
                     for i, p in enumerate(samples, 1)}
     environment = {"platform": platform.platform(), "python": platform.python_version(),
                    "rustc": subprocess.check_output(["rustc", "--version"], text=True).strip(),
-                   "iterations": args.iterations, "warmups_per_jpeg_method": 1,
+                   "iterations": args.iterations, "warmups_per_jpeg_method": 0 if args.jpeg_suite else 1,
                    "dataset": "local user JPEG samples; not a representative corpus" if args.samples else "five synthetic smoke fixtures; not a research evaluation corpus",
                    "rss_scope": "whole benchmark process, excluding compilation; not per image",
                    "rss_measured": (output / "peak-rss-kib.txt").is_file(),
                    "rss_source": "Linux /proc/self/status VmHWM when available",
-                   "jpeg_encoder": "image::codecs::jpeg::JpegEncoder",
-                   "quality_range": [40, 95], "resize": "explicit B1/E1-resize methods only" if args.samples else False,
+                   "jpeg_encoder": "image baseline vs libjpeg-turbo progressive 444/420" if args.jpeg_suite else "image::codecs::jpeg::JpegEncoder",
+                   "limits": {"max_pixels": 50000000, "working_memory_mib": 1024, "max_encode_attempts": 32} if args.jpeg_suite else "core defaults",
+                   "quality_range": [40, 95], "resize": "all suite methods; independently selected dimensions" if args.jpeg_suite else ("explicit B1/E1-resize methods only" if args.samples else False),
                    "psnr_reference": "independent decoded original JPEG, EXIF-normalized; resized outputs restored with Lanczos3" if args.samples else "synthetic RGB pixels",
                    "prefilter": {"threshold": 0.04, "coherence_boost": 4.0},
+                   "rate_coupling": "tau=min(max(base_tau,.25),base_tau*sqrt(max(1,unfiltered_q80_bytes/target_bytes))); q80 probe counts toward encode budget" if args.jpeg_suite else False,
                    "cargo_lock_sha256": hashlib.sha256((ROOT / "Cargo.lock").read_bytes()).hexdigest(),
                    "rust_source_sha256": {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
                                           for folder in [ROOT / "src", ROOT / "examples"]

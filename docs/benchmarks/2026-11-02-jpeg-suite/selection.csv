@@ -1,0 +1,14 @@
+filename,method,output_bytes,width,height,psnr_rgb
+pexels-bibekghosh-14553713.jpg,E3-turbo444,198775,3000,2000,38.5212
+pexels-izafi-33061425.jpg,B0-image,198185,2380,1587,34.5721
+pexels-king-siberia-1123639-2201541.jpg,E3-turbo420,195779,1945,2917,26.5508
+pexels-kseniachernaya-5767595.jpg,E1-fixed,199628,1522,2280,36.0545
+pexels-markusspiske-105003.jpg,E2-rate420,197480,2525,1683,34.4614
+pexels-myatezhny39-3570072.jpg,E2-rate,199099,1640,1087,32.1011
+pexels-pavel-danilyuk-6612793.jpg,E2-rate420,194025,3149,2102,33.2402
+pexels-sound-designer-s-k-pramanik-785950771-35870496.jpg,E3-turbo420,199118,1545,875,24.7943
+pexels-tizzy-20472033.jpg,E2-rate,198271,829,1244,31.7186
+pexels-zhanqun-cai-1507025-7640750.jpg,E3-turbo420,198710,2361,3542,38.9175
+sample-10mb.jpg,B2-gaussian,199861,1324,745,14.5615
+sample-1mb.jpg,E2-rate420,195239,2560,1440,30.2891
+sample-5mb.jpg,E2-rate420,199628,2725,1533,26.5675

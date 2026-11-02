@@ -79,6 +79,7 @@ fn jpeg_samples(
     repetitions: usize,
     directory: &Path,
     samples: &Path,
+    jpeg_suite: bool,
 ) -> Result<(), Box<dyn Error>> {
     let mut paths: Vec<_> = fs::read_dir(samples)?
         .map(|entry| entry.map(|e| e.path()))
@@ -94,12 +95,27 @@ fn jpeg_samples(
         return Err("no JPEG samples found".into());
     }
     println!(
-        "sample,method,iteration,input_bytes,output_bytes,target_bytes,elapsed_ms,psnr_rgb,text_pixel_psnr,quality,encode_attempts,status,width,height,resized,best_observed_bytes"
+        "sample,method,iteration,input_bytes,output_bytes,target_bytes,elapsed_ms,psnr_rgb,text_pixel_psnr,quality,encode_attempts,status,width,height,resized,best_observed_bytes,prefilter_threshold"
     );
     for (index, path) in paths.iter().enumerate() {
         let name = format!("sample-{:02}", index + 1);
         let input = fs::read(path)?;
-        let info = inspect_input(&input, &Default::default())?;
+        let limits = if jpeg_suite {
+            ProcessingLimits {
+                max_pixels: 50_000_000,
+                max_working_memory_bytes: 1024 * 1024 * 1024,
+                ..Default::default()
+            }
+        } else {
+            ProcessingLimits::default()
+        };
+        let info = inspect_input(
+            &input,
+            &CompressionOptions {
+                limits: limits.clone(),
+                ..Default::default()
+            },
+        )?;
         if info.format != OutputFormat::Jpeg {
             return Err("expected JPEG sample".into());
         }
@@ -108,10 +124,17 @@ fn jpeg_samples(
         let mut reference = image::DynamicImage::from_decoder(decoder)?;
         reference.apply_orientation(orientation);
         let reference = reference.into_rgb8();
-        for target in [200_000, 500_000, 1_000_000] {
+        let targets = if jpeg_suite {
+            vec![200_000]
+        } else {
+            vec![200_000, 500_000, 1_000_000]
+        };
+        for target in targets {
             let base = CompressionOptions {
                 jpeg_backend: JpegBackend::ImageBaseline,
                 target_bytes: Some(target),
+                limits: limits.clone(),
+                allow_resize: jpeg_suite,
                 ..Default::default()
             };
             let mut resize = base.clone();
@@ -126,11 +149,62 @@ fn jpeg_samples(
                 methods.extend([("E1-tensor", tensor), ("E1-tensor-resize", resize)]);
                 methods
             };
+            let methods = if jpeg_suite {
+                let mut native = methods[0].1.clone();
+                native.jpeg_backend = JpegBackend::Turbo444;
+                let mut chroma = native.clone();
+                chroma.jpeg_backend = JpegBackend::Turbo420;
+                let result = vec![
+                    ("B0-image", methods[0].1.clone()),
+                    ("E3-turbo444", native.clone()),
+                    ("E3-turbo420", chroma),
+                ];
+                #[cfg(feature = "experimental-prefilter")]
+                let result = {
+                    let mut result = result;
+                    for (name, mode, backend) in [
+                        (
+                            "B2-gaussian",
+                            experimental::PrefilterMode::Gaussian,
+                            JpegBackend::Turbo444,
+                        ),
+                        (
+                            "E1-fixed",
+                            experimental::PrefilterMode::FixedTensor,
+                            JpegBackend::Turbo444,
+                        ),
+                        (
+                            "E2-rate",
+                            experimental::PrefilterMode::RateCoupledTensor,
+                            JpegBackend::Turbo444,
+                        ),
+                        (
+                            "E2-rate420",
+                            experimental::PrefilterMode::RateCoupledTensor,
+                            JpegBackend::Turbo420,
+                        ),
+                    ] {
+                        let mut options = native.clone();
+                        options.jpeg_backend = backend;
+                        options.prefilter = Some(experimental::PrefilterOptions {
+                            mode,
+                            ..Default::default()
+                        });
+                        result.push((name, options));
+                    }
+                    result
+                };
+                result
+            } else {
+                methods
+            };
             for (method, options) in methods {
                 eprintln!("{name} target={target} method={method}");
-                match compress(&input, &options, |_| ControlFlow::Continue(())) {
-                    Ok(_) | Err(CompressionError::TargetUnreachable { .. }) => (),
-                    Err(error) => return Err(error.into()),
+                if !jpeg_suite {
+                    match compress(&input, &options, |_| ControlFlow::Continue(())) {
+                        Ok(_) | Err(CompressionError::TargetUnreachable { .. }) => (),
+                        Err(error) => return Err(error.into()),
+                    }
                 }
                 for iteration in 0..repetitions {
                     let begin = Instant::now();
@@ -154,8 +228,13 @@ fn jpeg_samples(
                                 &restored
                             };
                             let score = psnr(&reference, display, false);
+                            let threshold = out
+                                .report
+                                .prefilter_threshold
+                                .map(|t| t.to_string())
+                                .unwrap_or_default();
                             println!(
-                                "{name},{method},{iteration},{},{},{target},{elapsed:.4},{score:.4},nan,{},{},ok,{},{},{},",
+                                "{name},{method},{iteration},{},{},{target},{elapsed:.4},{score:.4},nan,{},{},ok,{},{},{},,{threshold}",
                                 input.len(),
                                 out.bytes.len(),
                                 out.report.quality.unwrap(),
@@ -165,8 +244,13 @@ fn jpeg_samples(
                                 out.report.resized
                             );
                             if iteration == 0 {
+                                let stem = if jpeg_suite {
+                                    path.file_stem().unwrap().to_string_lossy().into_owned()
+                                } else {
+                                    name.clone()
+                                };
                                 fs::write(
-                                    directory.join(format!("{name}-{target}-{method}.jpg")),
+                                    directory.join(format!("{stem}-{target}-{method}.jpg")),
                                     out.bytes,
                                 )?;
                             }
@@ -176,7 +260,7 @@ fn jpeg_samples(
                             ..
                         }) => {
                             println!(
-                                "{name},{method},{iteration},{},,{target},{elapsed:.4},nan,nan,,,unreachable,,,false,{best_observed_bytes}",
+                                "{name},{method},{iteration},{},,{target},{elapsed:.4},nan,nan,,,unreachable,,,false,{best_observed_bytes},",
                                 input.len()
                             );
                         }
@@ -198,7 +282,8 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err("repetitions must be positive".into());
     }
     if let Some(samples) = args.next() {
-        jpeg_samples(repetitions, &directory, Path::new(&samples))?;
+        let jpeg_suite = args.next().as_deref() == Some("jpeg-suite");
+        jpeg_samples(repetitions, &directory, Path::new(&samples), jpeg_suite)?;
         if let Ok(status) = fs::read_to_string("/proc/self/status")
             && let Some(peak) = linux_peak_rss_kib(&status)
         {

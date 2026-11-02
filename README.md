@@ -81,6 +81,8 @@ Mode `--samples` menguji JPEG lokal pada 200 KB, 500 KB, dan 1 MB, tanpa/dengan 
 
 [Laporan tiga JPEG pengguna](docs/benchmarks/jpeg-samples-2026-11-02.md) menyimpan snapshot sebelum encoder default dan H2 ditingkatkan. Manfaat filter harus dinilai ulang terhadap backend teroptimasi; tidak otomatis menjadi default.
 
+[Laporan13 JPEG/tujuh metode](docs/benchmarks/jpeg-suite-2026-11-02.md):91/91 keluaran memenuhi200KB. Encoder teroptimasi444 memberi PSNR lebih tinggi pada12/13 gambar vs baseline; manfaat coupling tetap bercampur. Jalankan `python3 tools/benchmark.py --samples samples --jpeg-suite --iterations 1 --output samples/results/jpeg-suite-run` untuk mereproduksi dengan profil desktop50MP/1GiB. Output berada di `samples/results/`, file asli tidak diubah.
+
 ## Verifikasi
 
 ```sh

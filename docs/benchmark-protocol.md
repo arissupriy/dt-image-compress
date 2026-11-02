@@ -31,6 +31,20 @@ python3 tools/benchmark.py --samples samples --iterations 3 --output target/jpeg
 
 Corpus pengguna ini melengkapi smoke test; belum menggantikan corpus evaluasi berlisensi yang beragam. B2 (denoise sederhana), E2 (rate coupling), dan E3 (backend alternatif) masih perlu diuji sebelum menyimpulkan manfaat gabungan secara umum.
 
+## Ablation JPEG teroptimasi pada corpus tambahan
+
+```sh
+python3 tools/benchmark.py --samples samples --jpeg-suite --iterations 1 --output samples/results/jpeg-suite-run
+```
+
+Mode ini menjalankan tujuh metode pada budget 200.000 bytes: B0-image; E3-turbo444; E3-turbo420; B2-gaussian (Turbo444); E1-fixed (Turbo444); E2-rate (Turbo444); E2-rate420. Semua mengizinkan resize Lanczos3, minimum long edge1.024; setiap metode dapat memilih dimensi berbeda. Chroma420 merupakan perubahan representasi lossy yang dilaporkan, bukan penghematan entropy murni.
+
+H2 mengukur referensi q80 tanpa filter pada backend yang dipilih dan menghitung probe dalam budget32 encode. `tau=min(max(tau_base,.25),tau_base*sqrt(max(1,B_q80/B_target)))`. Threshold dicatat di CSV, dibekukan selama quality/skala search, dan dibatasi. B2 memakai Gaussian sigma .8 tanpa tensor. E1 memakai threshold .04 dan coherence boost4.
+
+Corpus foto resolusi asli mencakup input di atas20MP. Mode desktop ini menaikkan limit eksplisit menjadi50MP/1GiB; default library20MP/256MiB tetap berlaku. Tidak ada resize tersembunyi sebelum core. Referensi metrik mengikuti orientasi EXIF, dan hasil resize dipulihkan ke dimensi sumber sebelum PSNR.
+
+Satu repetisi tanpa warmup dipakai untuk perbandingan ukuran/kualitas deterministik; waktu yang ikut tercatat bukan dasar klaim latency atau speed-up. Jalankan repetisi/perangkat terisolasi jika performa menjadi objek penelitian. Mode ini mengisi ablation B2/E2/E3 yang belum ada pada snapshot awal; hasil positif dan regresi harus dilaporkan bersama.
+
 ## Gate sebelum mengubah default
 
 Tambahkan corpus riil berlisensi, pisahkan tuning/evaluasi, gunakan metrik ROI dan pemeriksaan manusia, ukur pada perangkat sasaran, dan bandingkan denoise sederhana/backend alternatif. Data sintetis tidak membenarkan klaim penghematan umum, text preservation, atau latency mobile. Feature eksperimen tetap mati secara default sampai pengujian tersebut selesai.

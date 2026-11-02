@@ -59,3 +59,13 @@ Final command results and benchmark conclusions follow below.
 - B2 Gaussian control added under experimental-prefilter. Tiled prefilter upper cap is 50MP when callers explicitly raise core budgets; core defaults remain20MP/256MiB. Full diagnostic maps stay capped at1MP.
 - cargo test --offline --locked --all-features --all-targets -j2: **45 passed**; all-feature Clippy -D warnings and formatting passed. Fresh focused review found no blocking encoder/ICC/coupling/budget issues; one benchmark resize metadata label was corrected.
 - Expanded local JPEG corpus run uses explicit desktop50MP/1GiB limits, seven backend/filter methods at200,000 bytes, one measured pass and no warmup. Quality/dimensions are the comparison target; these timings are not a latency benchmark. Results will be recorded separately after the run completes.
+
+## Expanded corpus completed
+
+- 13 original JPEGs, seven methods, 91/91 successful outputs <=200,000 bytes, at most32 encodes. All original SHA-256 values and recorded Rust source hashes match. Source sample images remain local/ignored; raw measurements and manifest are versioned under docs/benchmarks/2026-11-02-jpeg-suite/.
+- Turbo444 vs image baseline:12 improved/1 regressed by RGB PSNR, mean+0.2761dB. E2-rate444 vs Turbo444 without filter:9 improved/4 regressed, mean−0.0049dB. Retain conservative optimized444 default; experimental filters and420 remain explicit choices. No novelty, perceptual superiority, or mobile-performance claim.
+- JPEG outputs are in samples/results/jpeg-suite-2026-11-02/. A separate best-psnr-200KB/ directory contains13 copied outputs selected after measurement, with selection.csv. This is not production automatic selection. Input paths/hashes are mapped in environment.json.
+- Release CLI target100KB smoke: sample-1mb.jpg ->98,345 bytes at2560x1440, q40, eight encodes, no resize, adaptive Turbo420. ImageMagick PSNR29.8982dB; JPEG remains lossy. Output stored directly under samples/results/.
+- Peak whole benchmark RSS825,840KiB includes references/metrics. Desktop limits50MP/1GiB are explicit and core defaults20MP/256MiB unchanged. One measurement/no warmup plus concurrent build activity prevents timing conclusions.
+- Independent review's resize metadata wording was corrected in the script and saved manifest. No metric data was altered. Corpus report: docs/benchmarks/jpeg-suite-2026-11-02.md.
+- Final cargo test --all-features --all-targets: **47 passed** (including ramp/corner coverage). Default tests including doctest, default/all-feature Clippy -D warnings, fmt, benchmark self-check and release CLI build passed. Remaining research/platform gates are listed in the report and root plan.

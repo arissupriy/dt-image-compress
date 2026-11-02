@@ -24,4 +24,6 @@ Prior art yang perlu diperdalam mencakup perceptual preprocessing, ROI coding, M
 
 [Hasil smoke benchmark pertama](benchmarks/smoke-2026-11-02.md): reduksi ukuran 0–1,631% dengan PSNR sedikit menurun pada beberapa fixture dan latency meningkat. Konfigurasi saat ini tetap experimental dan tidak menjadi default.
 
-[Pengujian tiga JPEG pengguna](benchmarks/jpeg-samples-2026-11-02.md) memakai resolusi asli dan resize yang dilaporkan eksplisit, pada target 200 KB/500 KB/1 MB. Hasil tensor bercampur: ada perbaikan PSNR sekitar 1 dB pada satu kasus dan penurunan pada kasus lain. Ketiga input tampak merupakan variasi ilustrasi yang sama; ini belum membuktikan manfaat pada foto/dokumen beragam. H2/rate coupling belum diimplementasikan.
+[Pengujian tiga JPEG awal](benchmarks/jpeg-samples-2026-11-02.md) memakai resolusi asli dan resize yang dilaporkan eksplisit, pada target 200 KB/500 KB/1 MB. H2 belum tersedia pada snapshot awal itu.
+
+[Corpus13 JPEG dan tujuh metode](benchmarks/jpeg-suite-2026-11-02.md) kini menguji B2/E1/E2/E3 pada200KB:91/91 sukses. Turbo444 meningkatkan PSNR pada12/13 input vs image baseline; coupling444 memberi rata-rata−0,0049dB dibanding Turbo444 tanpa filter. Ini hasil negatif/terbatas yang tetap disimpan. Default encoder ditingkatkan, filter tetap opt-in, dan420 merupakan pilihan eksplisit. Tidak ada pembuktian bahwa coupling atau satu konfigurasi selalu unggul.
