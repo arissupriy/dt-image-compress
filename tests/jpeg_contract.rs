@@ -192,6 +192,51 @@ fn default_jpeg_uses_progressive_coding_without_discarding_chroma_samples() {
 
 #[cfg(feature = "experimental-prefilter")]
 #[test]
+fn rate_coupling_increases_filter_strength_and_counts_the_reference_encode() {
+    let input = common::jpeg(95);
+    let mut options = CompressionOptions {
+        target_bytes: Some(1_000_000),
+        prefilter: Some(experimental::PrefilterOptions {
+            mode: experimental::PrefilterMode::RateCoupledTensor,
+            ..Default::default()
+        }),
+        ..Default::default()
+    };
+    let mild = run(&input, &options).unwrap();
+    options.target_bytes = Some(20_000);
+    let strong = run(&input, &options).unwrap();
+    assert!(strong.report.prefilter_threshold.unwrap() > mild.report.prefilter_threshold.unwrap());
+    assert!(strong.bytes.len() <= 20_000);
+    assert!(strong.report.encode_attempts <= options.limits.max_encode_attempts);
+    assert!(mild.report.encode_attempts >= 2);
+}
+
+#[cfg(feature = "experimental-prefilter")]
+#[test]
+fn rate_coupling_rejects_missing_context_and_retains_a_feasible_reference_with_tiny_budget() {
+    let input = common::jpeg(95);
+    let mut options = CompressionOptions {
+        prefilter: Some(experimental::PrefilterOptions {
+            mode: experimental::PrefilterMode::RateCoupledTensor,
+            ..Default::default()
+        }),
+        ..Default::default()
+    };
+    assert!(matches!(
+        run(&input, &options),
+        Err(CompressionError::InvalidOptions(_))
+    ));
+    let reference = run(&input, &Default::default()).unwrap();
+    options.target_bytes = Some(reference.bytes.len() as u64);
+    options.limits.max_encode_attempts = 2;
+    let output = run(&input, &options).unwrap();
+    assert!(output.bytes.len() <= reference.bytes.len());
+    assert_eq!(output.report.encode_attempts, 2);
+    assert_eq!(output.report.prefilter_threshold, None);
+}
+
+#[cfg(feature = "experimental-prefilter")]
+#[test]
 fn tiled_prefilter_handles_full_resolution_jpeg_within_the_memory_estimate() {
     let source = image::RgbImage::from_fn(1153, 897, |x, y| {
         image::Rgb([(x % 256) as u8, (y % 256) as u8, ((x + y) % 256) as u8])

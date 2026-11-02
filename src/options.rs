@@ -84,6 +84,13 @@ impl CompressionOptions {
         #[cfg(feature = "experimental-prefilter")]
         if let Some(config) = self.prefilter {
             config.validate()?;
+            if config.mode == crate::experimental::PrefilterMode::RateCoupledTensor
+                && (self.target_bytes.is_none() || self.limits.max_encode_attempts < 2)
+            {
+                return Err(CompressionError::InvalidOptions(
+                    "rate-coupled prefilter needs a target and at least two encode attempts".into(),
+                ));
+            }
         }
         if self.target_bytes == Some(0)
             || self.min_long_edge == 0

@@ -11,13 +11,22 @@ pub struct TensorSample {
 
 #[derive(Debug, Clone, Copy)]
 pub struct PrefilterOptions {
+    pub mode: PrefilterMode,
     pub threshold: f32,
     pub coherence_boost: f32,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PrefilterMode {
+    FixedTensor,
+    RateCoupledTensor,
+    Gaussian,
 }
 
 impl Default for PrefilterOptions {
     fn default() -> Self {
         Self {
+            mode: PrefilterMode::FixedTensor,
             threshold: 0.04,
             coherence_boost: 4.0,
         }
@@ -37,6 +46,14 @@ impl PrefilterOptions {
             ));
         }
         Ok(())
+    }
+
+    pub(crate) fn for_pressure(mut self, reference_bytes: u64, target_bytes: u64) -> Self {
+        let pressure = (reference_bytes as f64 / target_bytes as f64).max(1.0);
+        let cap = f64::from(self.threshold).max(0.25);
+        self.threshold = (f64::from(self.threshold) * pressure.sqrt()).min(cap) as f32;
+        self.mode = PrefilterMode::FixedTensor;
+        self
     }
 }
 
@@ -121,7 +138,7 @@ pub(crate) fn prefilter_with_progress(
     if pixels == 0 {
         return Err(CompressionError::InvalidInput("empty image".into()));
     }
-    if pixels > 20_000_000 {
+    if pixels > 50_000_000 {
         return Err(CompressionError::ResourceLimitExceeded(
             "experimental prefilter pixel count".into(),
         ));
@@ -150,6 +167,14 @@ pub(crate) fn prefilter_with_progress(
 }
 
 fn prefilter_full(img: &RgbImage, options: PrefilterOptions) -> Result<RgbImage, CompressionError> {
+    if options.mode == PrefilterMode::RateCoupledTensor {
+        return Err(CompressionError::InvalidOptions(
+            "rate coupling requires compression target context".into(),
+        ));
+    }
+    if options.mode == PrefilterMode::Gaussian {
+        return Ok(image::imageops::blur(img, 0.8));
+    }
     let tensor = analyze(img)?;
     let blurred = image::imageops::blur(img, 0.8);
     Ok(RgbImage::from_fn(img.width(), img.height(), |x, y| {
@@ -276,5 +301,34 @@ mod tests {
         });
         assert!(matches!(output, Err(CompressionError::Cancelled)));
         assert_eq!(tiles, 2);
+    }
+
+    #[test]
+    fn pressure_scaling_is_bounded_and_never_weakens_the_requested_threshold() {
+        let base = PrefilterOptions::default();
+        assert_eq!(base.for_pressure(100, 100).threshold, 0.04);
+        assert_eq!(base.for_pressure(400, 100).threshold, 0.08);
+        assert_eq!(base.for_pressure(u64::MAX, 1).threshold, 0.25);
+        let strong = PrefilterOptions {
+            threshold: 0.8,
+            ..base
+        };
+        assert_eq!(strong.for_pressure(u64::MAX, 1).threshold, 0.8);
+    }
+
+    #[test]
+    fn gaussian_control_blurs_a_color_impulse_without_tensor_protection() {
+        let mut image = RgbImage::new(9, 9);
+        image.put_pixel(4, 4, Rgb([255, 0, 0]));
+        let blurred = prefilter(
+            &image,
+            PrefilterOptions {
+                mode: PrefilterMode::Gaussian,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        assert!(blurred.get_pixel(4, 4)[0] < 200);
+        assert!(blurred.get_pixel(3, 4)[0] > 0);
     }
 }

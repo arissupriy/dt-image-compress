@@ -63,10 +63,13 @@ Batas awal: input 32 MiB, 20 juta piksel, estimasi working memory 256 MiB, maksi
 
 ## Eksperimen algoritma
 
-Feature `experimental-prefilter` menambahkan prefilter struktur lokal yang **mati secara default**. Filter memakai tile 256×256 dengan halo 2 piksel dan mengikuti batas input/budget core, hingga 20 megapiksel. API diagnostik `experimental::analyze` yang mengembalikan seluruh peta tensor tetap dibatasi 1 megapiksel. Implementasinya memakai Scharr, Gaussian window pada ketiga komponen tensor, koherensi, dan convex blend dengan citra blur. Kanal berbobot sRGB dipakai sebagai luma proxy nonlinear; ini bukan OCR, deteksi wajah, atau jaminan bahwa teks tetap terbaca. Threshold masih tetap, belum mengikuti tekanan target ukuran.
+Feature `experimental-prefilter` menambahkan prefilter struktur lokal yang **mati secara default**. Filter memakai tile 256×256 dengan halo 2 piksel dan mengikuti batas input/budget core: default 20 megapiksel, batas atas filter 50 megapiksel bila caller menaikkan budget secara eksplisit. API diagnostik `experimental::analyze` yang mengembalikan seluruh peta tensor tetap dibatasi 1 megapiksel. Implementasinya memakai Scharr, Gaussian window pada ketiga komponen tensor, koherensi, dan convex blend dengan citra blur. Kanal berbobot sRGB dipakai sebagai luma proxy nonlinear; ini bukan OCR, deteksi wajah, atau jaminan bahwa teks tetap terbaca.
+
+`--prefilter` memakai threshold tetap. `--adaptive-prefilter` menjalankan H2: satu probe JPEG tanpa filter pada quality 80 mengukur tekanan `rho=max(1,reference_bytes/target_bytes)`, lalu `tau=min(max(base_tau,0.25),base_tau*sqrt(rho))`. Filter dibekukan selama pencarian quality/skala; probe dihitung dalam budget 32 encode. Jika referensi q80 sudah feasible dan budget sisanya gagal menghasilkan kandidat terfilter, referensi dipertahankan. Report menyimpan backend dan threshold efektif. Rumus ini merupakan hipotesis eksperimen yang diimplementasikan, bukan klaim optimalitas. Gaussian blur sederhana juga tersedia sebagai kontrol di API eksperimen.
 
 ```sh
 cargo run --locked --release --features cli,experimental-prefilter -- photo.jpg -o experiment.jpg --target 200KB --prefilter
+cargo run --locked --release --features cli,experimental-prefilter -- photo.jpg -o adaptive.jpg --target 200KB --adaptive-prefilter
 python3 tools/benchmark.py --self-test
 python3 tools/benchmark.py --iterations 5 --output benchmark-results
 python3 tools/benchmark.py --samples samples --iterations 3 --output target/jpeg-samples-run
@@ -76,7 +79,7 @@ Direktori output benchmark harus belum ada. Harness membandingkan baseline dan t
 
 Mode `--samples` menguji JPEG lokal pada 200 KB, 500 KB, dan 1 MB, tanpa/dengan tensor dan tanpa/dengan izin resize. File asli tidak disalin ke output. `samples/` diabaikan Git dan dikecualikan dari paket crate. CSV juga menyimpan kasus target tidak tercapai; hasil resize mempunyai dimensi tersendiri dan tidak boleh dianggap sebagai keuntungan filter saja.
 
-[Laporan tiga JPEG pengguna](docs/benchmarks/jpeg-samples-2026-11-02.md) mencatat kecocokan dengan rencana, hasil pengukuran, dan bagian hybrid yang belum diimplementasikan. Manfaat filter bercampur; threshold tetap dan backend baseline belum diganti.
+[Laporan tiga JPEG pengguna](docs/benchmarks/jpeg-samples-2026-11-02.md) menyimpan snapshot sebelum encoder default dan H2 ditingkatkan. Manfaat filter harus dinilai ulang terhadap backend teroptimasi; tidak otomatis menjadi default.
 
 ## Verifikasi
 

@@ -65,6 +65,7 @@ pub(crate) fn encode(
         )
         .map_err(encode_error)?;
     bytes.truncate(len);
+    bytes.shrink_to_fit();
     if let Some(profile) = icc {
         // APP2 payload: 12-byte signature, sequence, count, then at most 65,519 profile bytes.
         const CHUNK: usize = 65_519;

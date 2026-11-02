@@ -45,6 +45,7 @@ pub struct CompressionReport {
     pub metadata_policy: MetadataPolicy,
     pub warnings: Vec<String>,
     pub jpeg_backend: Option<JpegBackend>,
+    pub prefilter_threshold: Option<f32>,
 }
 
 #[derive(Debug)]
@@ -74,6 +75,10 @@ where
         }
     };
     options.validate()?;
+    #[cfg(feature = "experimental-prefilter")]
+    let mut prefilter_threshold = None;
+    #[cfg(not(feature = "experimental-prefilter"))]
+    let prefilter_threshold = None;
     emit(ProgressStage::Inspect, 0)?;
     let info = inspect_input(input, options)?;
     let format = match options.format {
@@ -163,8 +168,12 @@ where
             } else {
                 decoded.into_rgb8()
             };
+            let mut attempts = 0;
+            let mut smallest = u64::MAX;
             #[cfg(feature = "experimental-prefilter")]
-            let rgb = if let Some(config) = options.prefilter {
+            let mut reference_fallback = None;
+            #[cfg(feature = "experimental-prefilter")]
+            let rgb = if let Some(mut config) = options.prefilter {
                 if icc.is_some() {
                     return Err(CompressionError::UnsupportedOperation(
                         "experimental prefilter does not support ICC-managed images".into(),
@@ -178,16 +187,26 @@ where
                         "experimental scratch buffers".into(),
                     ));
                 }
+                if config.mode == experimental::PrefilterMode::RateCoupledTensor {
+                    emit(ProgressStage::Encode, 0)?;
+                    let reference = codecs::jpeg::encode(&rgb, 80, None, options)?;
+                    attempts = 1;
+                    smallest = reference.len() as u64;
+                    config = config.for_pressure(smallest, options.target_bytes.unwrap());
+                    if smallest <= options.target_bytes.unwrap() {
+                        reference_fallback = Some(reference);
+                    }
+                }
+                prefilter_threshold = (config.mode != experimental::PrefilterMode::Gaussian)
+                    .then_some(config.threshold);
                 experimental::prefilter_with_progress(&rgb, config, || {
-                    emit(ProgressStage::Prepare, 0)
+                    emit(ProgressStage::Prepare, attempts)
                 })?
             } else {
                 rgb
             };
             let floor = options.min_long_edge.min(rgb.width().max(rgb.height()));
             let mut scaled = None;
-            let mut attempts = 0;
-            let mut smallest = u64::MAX;
             loop {
                 let working = scaled.as_ref().unwrap_or(&rgb);
                 if let Some(target) = options.target_bytes {
@@ -207,6 +226,11 @@ where
                             attempts,
                             working.dimensions(),
                         );
+                    }
+                    #[cfg(feature = "experimental-prefilter")]
+                    if let Some(reference) = reference_fallback.take() {
+                        prefilter_threshold = None;
+                        break (reference, Some(80), attempts, normalized_dimensions);
                     }
                     if !options.allow_resize
                         || attempts >= options.limits.max_encode_attempts
@@ -290,6 +314,7 @@ where
         metadata_policy: options.metadata,
         warnings,
         jpeg_backend: (format == OutputFormat::Jpeg).then_some(options.jpeg_backend),
+        prefilter_threshold,
     };
     Ok(CompressionOutput { bytes, report })
 }

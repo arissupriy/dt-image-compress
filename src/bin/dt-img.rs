@@ -47,6 +47,10 @@ struct Args {
     #[cfg(feature = "experimental-prefilter")]
     #[arg(long)]
     prefilter: bool,
+    /// Couple experimental tensor filter strength to the byte target
+    #[cfg(feature = "experimental-prefilter")]
+    #[arg(long, conflicts_with = "prefilter")]
+    adaptive_prefilter: bool,
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -162,6 +166,13 @@ fn run(args: Args) -> Result<(), Box<dyn Error>> {
     #[cfg(feature = "experimental-prefilter")]
     if args.prefilter {
         options.prefilter = Some(experimental::PrefilterOptions::default());
+    }
+    #[cfg(feature = "experimental-prefilter")]
+    if args.adaptive_prefilter {
+        options.prefilter = Some(experimental::PrefilterOptions {
+            mode: experimental::PrefilterMode::RateCoupledTensor,
+            ..Default::default()
+        });
     }
     let max_bytes = options.limits.max_input_bytes;
     let input_path = args.input;
